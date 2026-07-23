@@ -85,3 +85,15 @@ def buscar_lotes_do_dia(data):
     conn.close()
 
     return dados
+
+def contar_lotes():
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM lotes")
+
+    total = cursor.fetchone()[0]
+
+    conn.close()
+
+    return total
