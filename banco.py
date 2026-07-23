@@ -97,3 +97,15 @@ def contar_lotes():
     conn.close()
 
     return total
+
+def excluir_lote(lote):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "DELETE FROM lotes WHERE lote = ?",
+        (lote,)
+    )
+
+    conn.commit()
+    conn.close()
