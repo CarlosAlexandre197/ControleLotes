@@ -138,7 +138,7 @@ class JanelaPrincipal(QMainWindow):
             
             print("SALVANDO NO SQLITE")
             
-            salvar_lote([
+            salvar_lote(
                 lote,
                 quantidade,
                 cartoes,
@@ -148,7 +148,8 @@ class JanelaPrincipal(QMainWindow):
                 montador,
                 caixas,
                 data
-            ])
+            )
+            
             self.limpar_campos()
 
     def limpar_campos(self):
