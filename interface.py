@@ -215,4 +215,17 @@ class JanelaPrincipal(QMainWindow):
             f"Total de Caixas: {total_caixas}"
         )   
         
-    
+    def excluir_lote(self):
+
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+            return
+
+        lote = self.tabela.item(linha, 0).text()
+
+        excluir_lote(lote)
+
+        self.tabela.removeRow(linha)
+
+        self.atualizar_totais()
