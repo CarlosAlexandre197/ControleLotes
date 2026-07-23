@@ -13,7 +13,11 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 from datetime import datetime
-from banco import salvar_lote, buscar_lotes_do_dia
+from banco import (
+    salvar_lote,
+    buscar_lotes_do_dia,
+    excluir_lote
+)
 
 class JanelaPrincipal(QMainWindow):
     def __init__(self):
