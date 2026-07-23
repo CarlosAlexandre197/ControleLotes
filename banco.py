@@ -98,7 +98,7 @@ def contar_lotes():
 
     return total
 
-def excluir_lote(lote):
+def excluir_lote_db(lote):
     conn = conectar()
     cursor = conn.cursor()
 

@@ -16,7 +16,7 @@ from datetime import datetime
 from banco import (
     salvar_lote,
     buscar_lotes_do_dia,
-    excluir_lote
+    excluir_lote_db
 )
 
 class JanelaPrincipal(QMainWindow):
@@ -224,7 +224,7 @@ class JanelaPrincipal(QMainWindow):
 
         lote = self.tabela.item(linha, 0).text()
 
-        excluir_lote(lote)
+        excluir_lote_db(lote)
 
         self.tabela.removeRow(linha)
 
