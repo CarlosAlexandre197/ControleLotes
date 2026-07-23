@@ -143,6 +143,22 @@ class JanelaPrincipal(QMainWindow):
 
             self.atualizar_totais()
             
+            # Limpar campos
+            self.lote.clear()
+            self.quantidade.clear()
+            self.cartoes.clear()
+            self.cancelados.clear()
+            self.palete.clear()
+            self.montador.clear()
+            self.caixas.clear()
+
+            # Desmarcar checkboxes
+            self.etiquetas.setChecked(False)
+            self.faturado.setChecked(False)
+            self.embarcou.setChecked(False)
+            self.pre.setChecked(False)
+            self.notas.setChecked(False)
+            
             print("SALVANDO NO SQLITE")
             
             salvar_lote(
