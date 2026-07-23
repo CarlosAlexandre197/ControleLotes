@@ -185,6 +185,12 @@ class JanelaPrincipal(QMainWindow):
         self.montador.clear()
         self.caixas.clear()
         
+        self.etiquetas.setChecked(False)
+        self.faturado.setChecked(False)
+        self.embarcou.setChecked(False)
+        self.pre.setChecked(False)
+        self.notas.setChecked(False)
+        
     def carregar_lotes_do_dia(self):
         
         data = datetime.now().strftime("%d/%m/%Y")
