@@ -73,12 +73,15 @@ class JanelaPrincipal(QMainWindow):
 
         self.salvar = QPushButton("Salvar")
         self.limpar = QPushButton("Limpar")
+        self.excluir = QPushButton("Excluir Lote")
 
         botoes.addWidget(self.salvar)
         botoes.addWidget(self.limpar)
+        botoes.addWidget(self.excluir)
         
         self.salvar.clicked.connect(self.salvar_lote)
         self.limpar.clicked.connect(self.limpar_campos)
+        self.excluir.clicked.connect(self.excluir_lote)
 
         layout_principal.addLayout(botoes)
 
