@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt
 from datetime import datetime
-from banco import salvar_lote_excel
+from banco import salvar_lote
 
 class JanelaPrincipal(QMainWindow):
     def __init__(self):
@@ -135,7 +135,7 @@ class JanelaPrincipal(QMainWindow):
 
             self.atualizar_totais()
             
-            salvar_lote_excel([
+            salvar_lote([
                 lote,
                 quantidade,
                 cartoes,
