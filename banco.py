@@ -68,3 +68,20 @@ def salvar_lote(
 
     conn.commit()
     conn.close()
+    
+def buscar_lotes_do_dia(data):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT lote, quantidade, cartoes, cancelados,
+               final, palete, montador, caixas, data
+        FROM lotes
+        WHERE data = ?
+    """, (data,))
+
+    dados = cursor.fetchall()
+
+    conn.close()
+
+    return dados
