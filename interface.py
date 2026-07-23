@@ -169,12 +169,12 @@ class JanelaPrincipal(QMainWindow):
             linha = self.tabela.rowCount()
             self.tabela.insertRow(linha)
 
-        for coluna, valor in enumerate(lote):
-            self.tabela.setItem(
-                linha,
-                coluna,
-                QTableWidgetItem(str(valor))
-            )
+            for coluna, valor in enumerate(lote):
+                self.tabela.setItem(
+                    linha,
+                    coluna,
+                    QTableWidgetItem(str(valor))
+                )
 
         self.atualizar_totais()
 
