@@ -136,6 +136,8 @@ class JanelaPrincipal(QMainWindow):
 
             self.atualizar_totais()
             
+            print("SALVANDO NO SQLITE")
+            
             salvar_lote([
                 lote,
                 quantidade,
