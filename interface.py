@@ -105,6 +105,7 @@ class JanelaPrincipal(QMainWindow):
         layout_principal.addWidget(self.lbl_total_lotes)
         layout_principal.addWidget(self.lbl_total_pedidos)
         layout_principal.addWidget(self.lbl_total_caixas)
+        self.carregar_lotes_do_dia()
         
     def salvar_lote(self):
 
@@ -157,6 +158,25 @@ class JanelaPrincipal(QMainWindow):
         self.palete.clear()
         self.montador.clear()
         self.caixas.clear()
+        
+    def carregar_lotes_do_dia(self):
+        
+        data = datetime.now().strftime("%d/%m/%Y")
+
+        lotes = buscar_lotes_do_dia(data)
+
+        for lote in lotes:
+            linha = self.tabela.rowCount()
+            self.tabela.insertRow(linha)
+
+        for coluna, valor in enumerate(lote):
+            self.tabela.setItem(
+                linha,
+                coluna,
+                QTableWidgetItem(str(valor))
+            )
+
+        self.atualizar_totais()
 
     def atualizar_totais(self):
 
