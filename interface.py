@@ -9,7 +9,8 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QCheckBox,
     QTableWidget,
-    QTableWidgetItem
+    QTableWidgetItem,
+    QGroupBox
 )
 from PySide6.QtCore import Qt
 from datetime import datetime
@@ -113,6 +114,45 @@ class JanelaPrincipal(QMainWindow):
         self.lbl_total_pedidos = QLabel("Total Final de Pedidos: 0")
         self.lbl_total_caixas = QLabel("Total de Caixas: 0")
         layout_principal.addWidget(self.tabela)
+        # ==========================
+        # OMNICHANNEL
+        # ==========================
+
+        grupo_omni = QGroupBox("OmniChannel")
+
+        layout_omni = QVBoxLayout()
+
+        linha = QHBoxLayout()
+
+        self.omni = QLineEdit()
+        self.omni.setPlaceholderText("Quantidade")
+
+        self.btn_add_omni = QPushButton("Adicionar")
+
+        linha.addWidget(self.omni)
+        linha.addWidget(self.btn_add_omni)
+
+        layout_omni.addLayout(linha)
+
+        self.tabela_omni = QTableWidget()
+        self.tabela_omni.setColumnCount(3)
+        self.tabela_omni.setHorizontalHeaderLabels([
+            "ID",
+            "Quantidade",
+            "Hora"
+        ])
+
+        layout_omni.addWidget(self.tabela_omni)
+
+        self.lbl_total_omni = QLabel("Total OmniChannel: 0")
+        self.lbl_total_geral = QLabel("TOTAL GERAL DE PEDIDOS: 0")
+
+        layout_omni.addWidget(self.lbl_total_omni)
+        layout_omni.addWidget(self.lbl_total_geral)
+
+        grupo_omni.setLayout(layout_omni)
+
+        layout_principal.addWidget(grupo_omni)
         layout_principal.addWidget(self.lbl_total_lotes)
         layout_principal.addWidget(self.lbl_total_pedidos)
         layout_principal.addWidget(self.lbl_total_caixas)
