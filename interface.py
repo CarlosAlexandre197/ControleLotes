@@ -18,6 +18,7 @@ from banco import (
     buscar_lotes_do_dia,
     excluir_lote_db
 )
+from PySide6.QtWidgets import QMessageBox
 
 class JanelaPrincipal(QMainWindow):
     def __init__(self):
@@ -78,14 +79,17 @@ class JanelaPrincipal(QMainWindow):
         self.salvar = QPushButton("Salvar")
         self.limpar = QPushButton("Limpar")
         self.excluir = QPushButton("Excluir Lote")
+        self.btn_novo_dia = QPushButton("Novo Dia")
 
         botoes.addWidget(self.salvar)
         botoes.addWidget(self.limpar)
         botoes.addWidget(self.excluir)
+        botoes.addWidget(self.btn_novo_dia)
         
         self.salvar.clicked.connect(self.salvar_lote)
         self.limpar.clicked.connect(self.limpar_campos)
         self.excluir.clicked.connect(self.excluir_lote)
+        self.btn_novo_dia.clicked.connect(self.novo_dia)
 
         layout_principal.addLayout(botoes)
 
@@ -251,3 +255,24 @@ class JanelaPrincipal(QMainWindow):
         self.tabela.removeRow(linha)
 
         self.atualizar_totais()
+        
+    def novo_dia(self):
+
+        resposta = QMessageBox.question(
+            self,
+            "Novo Dia",
+            "Deseja iniciar um novo dia?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if resposta == QMessageBox.Yes:
+
+            self.tabela.setRowCount(0)
+
+            self.lbl_total_lotes.setText("Total de Lotes: 0")
+            self.lbl_total_pedidos.setText("Total Final de Pedidos: 0")
+            self.lbl_total_caixas.setText("Total de Caixas: 0")
+
+            self.limpar_campos()
+
+            self.carregar_lotes_do_dia()
