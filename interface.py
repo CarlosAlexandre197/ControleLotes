@@ -364,9 +364,9 @@ class JanelaPrincipal(QMainWindow):
                     QTableWidgetItem(str(valor))
                 )
                 
-        def atualizar_totais_omni(self):
+    def atualizar_totais_omni(self):
 
-            total_omni = 0
+        total_omni = 0
 
         for linha in range(self.tabela_omni.rowCount()):
 
