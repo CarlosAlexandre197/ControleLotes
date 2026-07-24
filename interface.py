@@ -17,7 +17,8 @@ from datetime import datetime
 from banco import (
     salvar_lote,
     buscar_lotes_do_dia,
-    excluir_lote_db
+    excluir_lote_db,
+    salvar_omni
 )
 from PySide6.QtWidgets import QMessageBox
 
@@ -91,6 +92,7 @@ class JanelaPrincipal(QMainWindow):
         self.limpar.clicked.connect(self.limpar_campos)
         self.excluir.clicked.connect(self.excluir_lote)
         self.btn_novo_dia.clicked.connect(self.novo_dia)
+        self.btn_add_omni.clicked.connect(self.adicionar_omni)
 
         layout_principal.addLayout(botoes)
 
@@ -316,3 +318,20 @@ class JanelaPrincipal(QMainWindow):
             self.limpar_campos()
 
             self.carregar_lotes_do_dia()
+            
+    def adicionar_omni(self):
+
+        quantidade = int(self.omni.text() or 0)
+
+        data = datetime.now().strftime("%d/%m/%Y")
+        hora = datetime.now().strftime("%H:%M")
+
+        salvar_omni(
+            quantidade,
+            data,
+            hora
+        )
+
+        self.omni.clear()
+
+        print("Omni salvo com sucesso!")
