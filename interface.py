@@ -18,7 +18,8 @@ from banco import (
     salvar_lote,
     buscar_lotes_do_dia,
     excluir_lote_db,
-    salvar_omni
+    salvar_omni,
+    buscar_omni_do_dia
 )
 from PySide6.QtWidgets import QMessageBox
 
@@ -162,6 +163,7 @@ class JanelaPrincipal(QMainWindow):
         layout_principal.addWidget(self.lbl_total_pedidos)
         layout_principal.addWidget(self.lbl_total_caixas)
         self.carregar_lotes_do_dia()
+        self.carregar_omni_do_dia()
         
     def salvar_lote(self):
 
@@ -338,3 +340,23 @@ class JanelaPrincipal(QMainWindow):
         self.omni.clear()
 
         print("Omni salvo com sucesso!")
+    
+    def carregar_omni_do_dia(self):
+
+        data = datetime.now().strftime("%d/%m/%Y")
+
+        registros = buscar_omni_do_dia(data)
+
+        self.tabela_omni.setRowCount(0)
+
+        for registro in registros:
+
+            linha = self.tabela_omni.rowCount()
+            self.tabela_omni.insertRow(linha)
+
+            for coluna, valor in enumerate(registro):
+                self.tabela_omni.setItem(
+                    linha,
+                    coluna,
+                    QTableWidgetItem(str(valor))
+                )
