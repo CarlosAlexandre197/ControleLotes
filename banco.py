@@ -30,6 +30,15 @@ def criar_tabela():
         data TEXT
     )
     """)
+    
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS omnichannel (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        quantidade INTEGER,
+        data TEXT,
+        hora TEXT
+    )
+    """)
 
     conn.commit()
     conn.close()
@@ -109,3 +118,34 @@ def excluir_lote_db(lote):
 
     conn.commit()
     conn.close()
+    
+def salvar_omni(quantidade, data, hora):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO omnichannel
+        (quantidade, data, hora)
+        VALUES (?, ?, ?)
+    """, (quantidade, data, hora))
+
+    conn.commit()
+    conn.close()
+
+
+def buscar_omni_do_dia(data):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, quantidade, hora
+        FROM omnichannel
+        WHERE data = ?
+        ORDER BY id
+    """, (data,))
+
+    dados = cursor.fetchall()
+
+    conn.close()
+
+    return dados
