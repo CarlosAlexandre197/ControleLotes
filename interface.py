@@ -92,7 +92,7 @@ class JanelaPrincipal(QMainWindow):
         self.limpar.clicked.connect(self.limpar_campos)
         self.excluir.clicked.connect(self.excluir_lote)
         self.btn_novo_dia.clicked.connect(self.novo_dia)
-        self.btn_add_omni.clicked.connect(self.adicionar_omni)
+        
 
         layout_principal.addLayout(botoes)
 
@@ -116,6 +116,7 @@ class JanelaPrincipal(QMainWindow):
         self.lbl_total_pedidos = QLabel("Total Final de Pedidos: 0")
         self.lbl_total_caixas = QLabel("Total de Caixas: 0")
         layout_principal.addWidget(self.tabela)
+        
         # ==========================
         # OMNICHANNEL
         # ==========================
@@ -133,6 +134,8 @@ class JanelaPrincipal(QMainWindow):
 
         linha.addWidget(self.omni)
         linha.addWidget(self.btn_add_omni)
+        self.btn_add_omni.clicked.connect(self.adicionar_omni)
+        
 
         layout_omni.addLayout(linha)
 
