@@ -164,6 +164,7 @@ class JanelaPrincipal(QMainWindow):
         layout_principal.addWidget(self.lbl_total_caixas)
         self.carregar_lotes_do_dia()
         self.carregar_omni_do_dia()
+        self.atualizar_totais_omni()
         
     def salvar_lote(self):
 
@@ -338,6 +339,7 @@ class JanelaPrincipal(QMainWindow):
         )
         
         self.carregar_omni_do_dia()
+        self.atualizar_totais_omni()
         self.omni.clear()
 
         print("Omni salvo com sucesso!")
@@ -361,3 +363,35 @@ class JanelaPrincipal(QMainWindow):
                     coluna,
                     QTableWidgetItem(str(valor))
                 )
+                
+        def atualizar_totais_omni(self):
+
+            total_omni = 0
+
+        for linha in range(self.tabela_omni.rowCount()):
+
+            quantidade = int(
+                self.tabela_omni.item(linha, 1).text()
+            )
+
+            total_omni += quantidade
+
+        self.lbl_total_omni.setText(
+            f"Total OmniChannel: {total_omni}"
+        )
+
+        total_lotes = 0
+
+        for linha in range(self.tabela.rowCount()):
+
+            pedidos = int(
+                self.tabela.item(linha, 4).text()
+            )
+
+            total_lotes += pedidos
+
+        total_geral = total_lotes + total_omni
+
+        self.lbl_total_geral.setText(
+            f"TOTAL GERAL DE PEDIDOS: {total_geral}"
+        )
