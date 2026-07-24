@@ -336,7 +336,8 @@ class JanelaPrincipal(QMainWindow):
             data,
             hora
         )
-
+        
+        self.carregar_omni_do_dia()
         self.omni.clear()
 
         print("Omni salvo com sucesso!")
