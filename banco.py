@@ -27,7 +27,8 @@ def criar_tabela():
         palete TEXT,
         montador TEXT,
         caixas INTEGER,
-        data TEXT
+        data TEXT,
+        status TEXT
     )
     """)
     
