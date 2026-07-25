@@ -44,32 +44,44 @@ def criar_tabela():
     conn.commit()
     conn.close()
 
-
 def salvar_lote(
         lote,
         quantidade,
         cartoes,
         cancelados,
         final,
-        data,
-        status):
+        palete,
+        montador,
+        caixas,
+        data):
 
     conn = conectar()
     cursor = conn.cursor()
 
     cursor.execute("""
     INSERT INTO lotes
-    (lote, quantidade, cartoes, cancelados,
-     final, data, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    (
+        lote,
+        quantidade,
+        cartoes,
+        cancelados,
+        final,
+        palete,
+        montador,
+        caixas,
+        data
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         lote,
         quantidade,
         cartoes,
         cancelados,
         final,
-        data,
-        status
+        palete,
+        montador,
+        caixas,
+        data
     ))
 
     conn.commit()
@@ -81,7 +93,7 @@ def buscar_lotes_do_dia(data):
 
     cursor.execute("""
         SELECT lote, quantidade, cartoes, cancelados,
-               final, palete, montador, caixas, data
+               final, palete, montador, caixas
         FROM lotes
         WHERE data = ?
     """, (data,))
