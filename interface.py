@@ -1,209 +1,179 @@
-from PySide6.QtWidgets import (
+from PyQt6.QtWidgets import (
     QMainWindow,
-    QWidget,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QVBoxLayout,
-    QHBoxLayout,
-    QFormLayout,
-    QCheckBox,
-    QTableWidget,
-    QTableWidgetItem,
-    QGroupBox
+    QMessageBox,
+    QTableWidgetItem
 )
-from PySide6.QtCore import Qt
-from datetime import datetime
-from banco import (
-    salvar_lote,
-    buscar_lotes_do_dia,
-    excluir_lote_db,
-    salvar_omni,
-    buscar_omni_do_dia
-)
-from PySide6.QtWidgets import QMessageBox
 
-class JanelaPrincipal(QMainWindow):
+from PyQt6.uic import loadUi
+from datetime import datetime
+
+from banco import salvar_lote, buscar_lotes_do_dia
+
+
+class Interface(QMainWindow):
+
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("🚛 Controle de Lotes")
-        self.resize(1200, 700)
+        loadUi("interface.ui", self)
 
-        widget = QWidget()
-        self.setCentralWidget(widget)
+        self.configurar_tabela()
 
-        layout_principal = QVBoxLayout(widget)
+        self.botao_salvar.clicked.connect(self.salvar)
 
-        titulo = QLabel("🚛 CONTROLE DE LOTES")
-        titulo.setAlignment(Qt.AlignCenter)
-        titulo.setStyleSheet("""
-            font-size:24px;
-            font-weight:bold;
-            padding:10px;
-        """)
+        self.carregar_lotes_do_dia()
+        self.atualizar_totais()
 
-        layout_principal.addWidget(titulo)
 
-        formulario = QFormLayout()
+    # ==============================
+    # CONFIGURAÇÃO DA TABELA
+    # ==============================
 
-        self.lote = QLineEdit()
-        self.quantidade = QLineEdit()
-        self.cartoes = QLineEdit()
-        self.cancelados = QLineEdit()
-        self.palete = QLineEdit()
-        self.montador = QLineEdit()
-        self.caixas = QLineEdit()
-        self.caixas.returnPressed.connect(self.salvar_lote)
+    def configurar_tabela(self):
 
-        formulario.addRow("Lote:", self.lote)
-        formulario.addRow("Quantidade:", self.quantidade)
-        formulario.addRow("Cartões:", self.cartoes)
-        formulario.addRow("Cancelados:", self.cancelados)
-        formulario.addRow("Palete:", self.palete)
-        formulario.addRow("Montador:", self.montador)
-        formulario.addRow("Caixas do Palete:", self.caixas)
+        self.tabela.setColumnCount(8)
 
-        layout_principal.addLayout(formulario)
-        
-        self.etiquetas = QCheckBox("Imprimiu Etiquetas")
-        self.faturado = QCheckBox("Faturado")
-        self.embarcou = QCheckBox("Embarcou")
-        self.pre = QCheckBox("Pré-Autorização")
-        self.notas = QCheckBox("Imprimiu Notas")
-
-        layout_principal.addWidget(self.etiquetas)
-        layout_principal.addWidget(self.faturado)
-        layout_principal.addWidget(self.embarcou)
-        layout_principal.addWidget(self.pre)
-        layout_principal.addWidget(self.notas)
-
-        botoes = QHBoxLayout()
-
-        self.salvar = QPushButton("Salvar")
-        self.limpar = QPushButton("Limpar")
-        self.excluir = QPushButton("Excluir Lote")
-        self.btn_novo_dia = QPushButton("Novo Dia")
-
-        botoes.addWidget(self.salvar)
-        botoes.addWidget(self.limpar)
-        botoes.addWidget(self.excluir)
-        botoes.addWidget(self.btn_novo_dia)
-        
-        self.salvar.clicked.connect(self.salvar_lote)
-        self.limpar.clicked.connect(self.limpar_campos)
-        self.excluir.clicked.connect(self.excluir_lote)
-        self.btn_novo_dia.clicked.connect(self.novo_dia)
-        
-
-        layout_principal.addLayout(botoes)
-
-        self.tabela = QTableWidget()
-
-        self.tabela.setColumnCount(9)
         self.tabela.setHorizontalHeaderLabels([
             "Lote",
             "Quantidade",
             "Cartões",
             "Cancelados",
-            "Final",
+            "Quantidade Final",
             "Palete",
             "Montador",
-            "Caixas",
-            "Data"
-
-        ])
-        
-        self.lbl_total_lotes = QLabel("Total de Lotes: 0")
-        self.lbl_total_pedidos = QLabel("Total Final de Pedidos: 0")
-        self.lbl_total_caixas = QLabel("Total de Caixas: 0")
-        layout_principal.addWidget(self.tabela)
-        
-        # ==========================
-        # OMNICHANNEL
-        # ==========================
-
-        grupo_omni = QGroupBox("OmniChannel")
-
-        layout_omni = QVBoxLayout()
-
-        linha = QHBoxLayout()
-
-        self.omni = QLineEdit()
-        self.omni.setPlaceholderText("Quantidade")
-        
-        self.omni.returnPressed.connect(self.adicionar_omni)
-
-        self.btn_add_omni = QPushButton("Adicionar")
-
-        linha.addWidget(self.omni)
-        linha.addWidget(self.btn_add_omni)
-        self.btn_add_omni.clicked.connect(self.adicionar_omni)
-        
-
-        layout_omni.addLayout(linha)
-
-        self.tabela_omni = QTableWidget()
-        self.tabela_omni.setColumnCount(3)
-        self.tabela_omni.setHorizontalHeaderLabels([
-            "ID",
-            "Quantidade",
-            "Hora"
+            "Caixas"
         ])
 
-        layout_omni.addWidget(self.tabela_omni)
 
-        self.lbl_total_omni = QLabel("Total OmniChannel: 0")
-        self.lbl_total_geral = QLabel("TOTAL GERAL DE PEDIDOS: 0")
+    # ==============================
+    # SALVAR LOTE
+    # ==============================
 
-        layout_omni.addWidget(self.lbl_total_omni)
-        layout_omni.addWidget(self.lbl_total_geral)
+    def salvar(self):
 
-        grupo_omni.setLayout(layout_omni)
+        lote = self.lote.text()
+        quantidade = int(self.quantidade.text())
+        cartoes = int(self.cartoes.text())
+        cancelados = int(self.cancelados.text())
 
-        layout_principal.addWidget(grupo_omni)
-        layout_principal.addWidget(self.lbl_total_lotes)
-        layout_principal.addWidget(self.lbl_total_pedidos)
-        layout_principal.addWidget(self.lbl_total_caixas)
-        self.carregar_lotes_do_dia()
-        self.carregar_omni_do_dia()
-        self.atualizar_totais_omni()
-    
-    def salvar_lote(self):
+        palete = self.palete.text()
+        montador = self.montador.text()
+        caixas = int(self.caixas.text())
 
-        lote = self.lote.text().strip()
 
-        if lote == "":
+        quantidade_final = (
+            quantidade
+            - cartoes
+            - cancelados
+        )
+
+
+        if quantidade_final < 0:
+            QMessageBox.warning(
+                self,
+                "Erro",
+                "Quantidade final não pode ser negativa."
+            )
             return
 
-        quantidade = int(self.quantidade.text() or 0)
-        cartoes = int(self.cartoes.text() or 0)
-        cancelados = int(self.cancelados.text() or 0)
-
-        final = quantidade - cartoes - cancelados
 
         data = datetime.now().strftime("%d/%m/%Y")
 
-        print("SALVANDO NO SQLITE")
 
         salvar_lote(
             lote,
             quantidade,
             cartoes,
             cancelados,
-            final,
-            data,
-            "PENDENTE"
+            quantidade_final,
+            palete,
+            montador,
+            caixas,
+            data
         )
 
-        # Atualiza a tabela lendo do banco
+
         self.carregar_lotes_do_dia()
 
-        # Atualiza os totais
         self.atualizar_totais()
 
-        # Limpa os campos
-        self.limpar_campos()    
+        self.limpar_campos()
+
+
+
+    # ==============================
+    # CARREGAR LOTES
+    # ==============================
+
+    def carregar_lotes_do_dia(self):
+
+        data = datetime.now().strftime("%d/%m/%Y")
+
+
+        lotes = buscar_lotes_do_dia(data)
+
+
+        self.tabela.setRowCount(0)
+
+
+        for lote in lotes:
+
+            linha = self.tabela.rowCount()
+
+            self.tabela.insertRow(linha)
+
+
+            for coluna, valor in enumerate(lote):
+
+                self.tabela.setItem(
+                    linha,
+                    coluna,
+                    QTableWidgetItem(str(valor))
+                )
+
+
+
+    # ==============================
+    # ATUALIZAR TOTAIS
+    # ==============================
+
+    def atualizar_totais(self):
+
+        total_pedidos = 0
+        total_caixas = 0
+
+
+        for linha in range(self.tabela.rowCount()):
+
+            total_pedidos += int(
+                self.tabela.item(
+                    linha,
+                    4
+                ).text()
+            )
+
+
+            total_caixas += int(
+                self.tabela.item(
+                    linha,
+                    7
+                ).text()
+            )
+
+
+        self.total_pedidos.setText(
+            str(total_pedidos)
+        )
+
+        self.total_caixas.setText(
+            str(total_caixas)
+        )
+
+
+
+    # ==============================
+    # LIMPAR CAMPOS
+    # ==============================
 
     def limpar_campos(self):
 
@@ -211,165 +181,6 @@ class JanelaPrincipal(QMainWindow):
         self.quantidade.clear()
         self.cartoes.clear()
         self.cancelados.clear()
-        
-        self.lote.setFocus()
-        
-        self.etiquetas.setChecked(False)
-        self.faturado.setChecked(False)
-        self.embarcou.setChecked(False)
-        self.pre.setChecked(False)
-        self.notas.setChecked(False)
-        
-    def carregar_lotes_do_dia(self):
-        
-        data = datetime.now().strftime("%d/%m/%Y")
-
-        lotes = buscar_lotes_do_dia(data)
-
-        for lote in lotes:
-            linha = self.tabela.rowCount()
-            self.tabela.insertRow(linha)
-
-            for coluna, valor in enumerate(lote):
-                self.tabela.setItem(
-                    linha,
-                    coluna,
-                    QTableWidgetItem(str(valor))
-                )
-
-        self.atualizar_totais()
-
-    def atualizar_totais(self):
-
-        total_lotes = self.tabela.rowCount()
-
-        total_pedidos = 0
-        total_caixas = 0
-
-        for linha in range(total_lotes):
-
-            final = int(self.tabela.item(linha, 4).text())
-            caixas = int(self.tabela.item(linha, 7).text())
-
-            total_pedidos += final
-            total_caixas += caixas
-
-        self.lbl_total_lotes.setText(
-            f"Total de Lotes: {total_lotes}"
-        )
-
-        self.lbl_total_pedidos.setText(
-            f"Total Final de Pedidos: {total_pedidos}"
-        )
-
-        self.lbl_total_caixas.setText(
-            f"Total de Caixas: {total_caixas}"
-        )   
-        
-    def excluir_lote(self):
-
-        linha = self.tabela.currentRow()
-
-        if linha < 0:
-            return
-
-        lote = self.tabela.item(linha, 0).text()
-
-        excluir_lote_db(lote)
-
-        self.tabela.removeRow(linha)
-
-        self.atualizar_totais()
-        
-    def novo_dia(self):
-
-        resposta = QMessageBox.question(
-            self,
-            "Novo Dia",
-            "Deseja iniciar um novo dia?",
-            QMessageBox.Yes | QMessageBox.No
-        )
-
-        if resposta == QMessageBox.Yes:
-
-            self.tabela.setRowCount(0)
-
-            self.lbl_total_lotes.setText("Total de Lotes: 0")
-            self.lbl_total_pedidos.setText("Total Final de Pedidos: 0")
-            self.lbl_total_caixas.setText("Total de Caixas: 0")
-
-            self.limpar_campos()
-
-            self.carregar_lotes_do_dia()
-            
-    def adicionar_omni(self):
-
-        quantidade = int(self.omni.text() or 0)
-
-        data = datetime.now().strftime("%d/%m/%Y")
-        hora = datetime.now().strftime("%H:%M")
-
-        salvar_omni(
-            quantidade,
-            data,
-            hora
-        )
-        
-        self.carregar_omni_do_dia()
-        self.atualizar_totais_omni()
-        self.omni.clear()
-        self.omni.setFocus()
-
-        print("Omni salvo com sucesso!")
-    
-    def carregar_omni_do_dia(self):
-
-        data = datetime.now().strftime("%d/%m/%Y")
-
-        registros = buscar_omni_do_dia(data)
-
-        self.tabela_omni.setRowCount(0)
-
-        for registro in registros:
-
-            linha = self.tabela_omni.rowCount()
-            self.tabela_omni.insertRow(linha)
-
-            for coluna, valor in enumerate(registro):
-                self.tabela_omni.setItem(
-                    linha,
-                    coluna,
-                    QTableWidgetItem(str(valor))
-                )
-                
-    def atualizar_totais_omni(self):
-
-        total_omni = 0
-
-        for linha in range(self.tabela_omni.rowCount()):
-
-            quantidade = int(
-                self.tabela_omni.item(linha, 1).text()
-            )
-
-            total_omni += quantidade
-
-        self.lbl_total_omni.setText(
-            f"Total OmniChannel: {total_omni}"
-        )
-
-        total_lotes = 0
-
-        for linha in range(self.tabela.rowCount()):
-
-            pedidos = int(
-                self.tabela.item(linha, 4).text()
-            )
-
-            total_lotes += pedidos
-
-        total_geral = total_lotes + total_omni
-
-        self.lbl_total_geral.setText(
-            f"TOTAL GERAL DE PEDIDOS: {total_geral}"
-        )
+        self.palete.clear()
+        self.montador.clear()
+        self.caixas.clear()
