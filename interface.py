@@ -168,67 +168,42 @@ class JanelaPrincipal(QMainWindow):
         self.carregar_lotes_do_dia()
         self.carregar_omni_do_dia()
         self.atualizar_totais_omni()
-        
+    
     def salvar_lote(self):
 
-            lote = self.lote.text()
-            quantidade = int(self.quantidade.text() or 0)
-            cartoes = int(self.cartoes.text() or 0)
-            cancelados = int(self.cancelados.text() or 0)
+        lote = self.lote.text().strip()
 
-            palete = self.palete.text()
-            montador = self.montador.text()
-            caixas = int(self.caixas.text() or 0)
+        if lote == "":
+            return
 
-            final = quantidade - cartoes - cancelados
-            data = datetime.now().strftime("%d/%m/%Y")
+        quantidade = int(self.quantidade.text() or 0)
+        cartoes = int(self.cartoes.text() or 0)
+        cancelados = int(self.cancelados.text() or 0)
 
-            linha = self.tabela.rowCount()
-            self.tabela.insertRow(linha)
+        final = quantidade - cartoes - cancelados
 
-            self.tabela.setItem(linha, 0, QTableWidgetItem(lote))
-            self.tabela.setItem(linha, 1, QTableWidgetItem(str(quantidade)))
-            self.tabela.setItem(linha, 2, QTableWidgetItem(str(cartoes)))
-            self.tabela.setItem(linha, 3, QTableWidgetItem(str(cancelados)))
-            self.tabela.setItem(linha, 4, QTableWidgetItem(str(final)))
-            self.tabela.setItem(linha, 5, QTableWidgetItem(palete))
-            self.tabela.setItem(linha, 6, QTableWidgetItem(montador))
-            self.tabela.setItem(linha, 7, QTableWidgetItem(str(caixas)))
-            self.tabela.setItem(linha, 8, QTableWidgetItem(data))
+        data = datetime.now().strftime("%d/%m/%Y")
 
-            self.atualizar_totais()
-            
-            # Limpar campos
-            self.lote.clear()
-            self.quantidade.clear()
-            self.cartoes.clear()
-            self.cancelados.clear()
-            self.palete.clear()
-            self.montador.clear()
-            self.caixas.clear()
+        print("SALVANDO NO SQLITE")
 
-            # Desmarcar checkboxes
-            self.etiquetas.setChecked(False)
-            self.faturado.setChecked(False)
-            self.embarcou.setChecked(False)
-            self.pre.setChecked(False)
-            self.notas.setChecked(False)
-            
-            print("SALVANDO NO SQLITE")
-            
-            salvar_lote(
-                lote,
-                quantidade,
-                cartoes,
-                cancelados,
-                final,
-                palete,
-                montador,
-                caixas,
-                data
-            )
-            
-            self.limpar_campos()
+        salvar_lote(
+            lote,
+            quantidade,
+            cartoes,
+            cancelados,
+            final,
+            data,
+            "PENDENTE"
+        )
+
+        # Atualiza a tabela lendo do banco
+        self.carregar_lotes_do_dia()
+
+        # Atualiza os totais
+        self.atualizar_totais()
+
+        # Limpa os campos
+        self.limpar_campos()    
 
     def limpar_campos(self):
 
@@ -236,9 +211,7 @@ class JanelaPrincipal(QMainWindow):
         self.quantidade.clear()
         self.cartoes.clear()
         self.cancelados.clear()
-        self.palete.clear()
-        self.montador.clear()
-        self.caixas.clear()
+        
         self.lote.setFocus()
         
         self.etiquetas.setChecked(False)

@@ -51,10 +51,8 @@ def salvar_lote(
         cartoes,
         cancelados,
         final,
-        palete,
-        montador,
-        caixas,
-        data):
+        data,
+        status):
 
     conn = conectar()
     cursor = conn.cursor()
@@ -62,18 +60,16 @@ def salvar_lote(
     cursor.execute("""
     INSERT INTO lotes
     (lote, quantidade, cartoes, cancelados,
-     final, palete, montador, caixas, data)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+     final, data, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
         lote,
         quantidade,
         cartoes,
         cancelados,
         final,
-        palete,
-        montador,
-        caixas,
-        data
+        data,
+        status
     ))
 
     conn.commit()
