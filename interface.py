@@ -130,6 +130,8 @@ class JanelaPrincipal(QMainWindow):
 
         self.omni = QLineEdit()
         self.omni.setPlaceholderText("Quantidade")
+        
+        self.omni.returnPressed.connect(self.adicionar_omni)
 
         self.btn_add_omni = QPushButton("Adicionar")
 
@@ -341,6 +343,7 @@ class JanelaPrincipal(QMainWindow):
         self.carregar_omni_do_dia()
         self.atualizar_totais_omni()
         self.omni.clear()
+        self.omni.setFocus()
 
         print("Omni salvo com sucesso!")
     
