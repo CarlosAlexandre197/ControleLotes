@@ -54,6 +54,7 @@ class JanelaPrincipal(QMainWindow):
         self.palete = QLineEdit()
         self.montador = QLineEdit()
         self.caixas = QLineEdit()
+        self.caixas.returnPressed.connect(self.salvar_lote)
 
         formulario.addRow("Lote:", self.lote)
         formulario.addRow("Quantidade:", self.quantidade)
@@ -238,6 +239,7 @@ class JanelaPrincipal(QMainWindow):
         self.palete.clear()
         self.montador.clear()
         self.caixas.clear()
+        self.lote.setFocus()
         
         self.etiquetas.setChecked(False)
         self.faturado.setChecked(False)
