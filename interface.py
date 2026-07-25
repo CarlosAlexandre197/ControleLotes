@@ -184,3 +184,15 @@ class Interface(QMainWindow):
         self.palete.clear()
         self.montador.clear()
         self.caixas.clear()
+    
+if __name__ == "__main__":
+
+    from PyQt6.QtWidgets import QApplication
+
+    app = QApplication([])
+
+    janela = Interface()
+
+    janela.show()
+
+    app.exec()    
