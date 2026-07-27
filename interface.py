@@ -15,7 +15,16 @@ class Interface(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        loadUi("interface.ui", self)
+        import os
+
+        caminho_ui = os.path.join(
+            os.path.dirname(__file__),
+            "assets",
+            "ui",
+            "main_window.ui"
+        )
+
+        loadUi(caminho_ui, self)
 
         self.configurar_tabela()
 
