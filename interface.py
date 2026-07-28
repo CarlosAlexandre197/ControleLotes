@@ -199,6 +199,51 @@ class Interface(QMainWindow):
         self.montador.clear()
         self.caixas.clear()
     
+    def salvar(self):
+
+        try:
+            lote = self.lote.text().strip()
+
+            quantidade = int(self.quantidade.text() or 0)
+            cartoes = int(self.cartoes.text() or 0)
+            cancelados = int(self.cancelados.text() or 0)
+
+            palete = self.palete.text().strip()
+            montador = self.montador.text().strip()
+            caixas = int(self.caixas.text() or 0)
+
+            quantidade_final = quantidade - cartoes - cancelados
+
+            if quantidade_final < 0:
+                QMessageBox.warning(
+                    self,
+                    "Erro",
+                    "A quantidade final não pode ser negativa."
+                )
+                return
+
+            data = datetime.now().strftime("%d/%m/%Y")
+
+            salvar_lote(
+                lote,
+                quantidade,
+                cartoes,
+                cancelados,
+                quantidade_final,
+                data,
+                ""
+            )
+
+            self.carregar_lotes_do_dia()
+            self.atualizar_totais()
+            self.limpar_campos()
+
+        except ValueError:
+            QMessageBox.warning(
+                self,
+                "Erro",
+                "Preencha os campos numéricos corretamente."
+            )
 if __name__ == "__main__":
 
     from PyQt6.QtWidgets import QApplication
