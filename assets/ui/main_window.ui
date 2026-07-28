@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -205,18 +205,18 @@
       <rect>
        <x>20</x>
        <y>340</y>
-       <width>90</width>
+       <width>120</width>
        <height>30</height>
       </rect>
      </property>
      <property name="text">
-      <string>Salvar</string>
+      <string>Salvar Lote</string>
      </property>
     </widget>
     <widget class="QPushButton" name="botao_limpar">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>320</x>
        <y>340</y>
        <width>90</width>
        <height>30</height>
@@ -229,7 +229,7 @@
     <widget class="QPushButton" name="botao_excluir">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>420</x>
        <y>340</y>
        <width>90</width>
        <height>30</height>
@@ -242,7 +242,7 @@
     <widget class="QPushButton" name="botao_novo_dia">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>520</x>
        <y>340</y>
        <width>90</width>
        <height>30</height>
@@ -261,54 +261,7 @@
        <height>600</height>
       </rect>
      </property>
-     <column/>
-     <column/>
-     <column/>
-     <column/>
-     <column/>
-     <column/>
-     <column/>
-     <column>
-      <property name="text">
-       <string>Lote</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Quantidade</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Cartões</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Cancelados</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Quantidade Final</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Palete</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Montador</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Caixas</string>
-      </property>
-     </column>
-    </widget>
+     <column><property name="text"><string>Lote</string></property></column><column><property name="text"><string>Quantidade</string></property></column><column><property name="text"><string>Cartões</string></property></column><column><property name="text"><string>Cancelados</string></property></column><column><property name="text"><string>Quantidade Final</string></property></column><column><property name="text"><string>Palete</string></property></column><column><property name="text"><string>Montador</string></property></column><column><property name="text"><string>Caixas</string></property></column><column><property name="text"><string>Status</string></property></column></widget>
     <widget class="QLabel" name="total_lotes">
      <property name="geometry">
       <rect>
@@ -349,8 +302,8 @@
      </property>
     </widget>
    </widget>
-  </widget>
+  <widget class="QPushButton" name="botao_finalizar"><property name="geometry"><rect><x>150</x><y>340</y><width>160</width><height>30</height></rect></property><property name="text"><string>Finalizar Separação</string></property></widget></widget>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>
