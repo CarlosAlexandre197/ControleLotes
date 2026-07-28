@@ -1,21 +1,25 @@
+import os
+from datetime import datetime
+
 from PyQt6.QtWidgets import (
+    QApplication,
     QMainWindow,
     QMessageBox,
     QTableWidgetItem
 )
-
 from PyQt6.uic import loadUi
-from datetime import datetime
 
-from banco import salvar_lote, buscar_lotes_do_dia
+from banco import (
+    criar_tabela,
+    salvar_lote,
+    buscar_lotes_do_dia
+)
 
 
 class Interface(QMainWindow):
 
     def __init__(self):
         super().__init__()
-
-        import os
 
         caminho_ui = os.path.join(
             os.path.dirname(__file__),
@@ -26,9 +30,10 @@ class Interface(QMainWindow):
 
         loadUi(caminho_ui, self)
 
-        self.configurar_tabela()
+        criar_tabela()
 
         self.botao_salvar.clicked.connect(self.salvar)
+        self.botao_limpar.clicked.connect(self.limpar_campos)
 
         self.carregar_lotes_do_dia()
         self.atualizar_totais()
