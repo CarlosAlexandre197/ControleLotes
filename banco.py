@@ -53,7 +53,9 @@ def salvar_lote(
         palete,
         montador,
         caixas,
-        data):
+        data
+        
+):
 
     conn = conectar()
     cursor = conn.cursor()
