@@ -45,16 +45,13 @@ def criar_tabela():
     conn.close()
 
 def salvar_lote(
-        lote,
-        quantidade,
-        cartoes,
-        cancelados,
-        final,
-        palete,
-        montador,
-        caixas,
-        data
-        
+    lote,
+    quantidade,
+    cartoes,
+    cancelados,
+    final,
+    data,
+    status="Pendente"
 ):
 
     conn = conectar()
@@ -68,22 +65,18 @@ def salvar_lote(
         cartoes,
         cancelados,
         final,
-        palete,
-        montador,
-        caixas,
-        data
+        data,
+        status
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
         lote,
         quantidade,
         cartoes,
         cancelados,
         final,
-        palete,
-        montador,
-        caixas,
-        data
+        data,
+        status
     ))
 
     conn.commit()
