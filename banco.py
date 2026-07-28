@@ -82,6 +82,34 @@ def salvar_lote(
     conn.commit()
     conn.close()
     
+def atualizar_separacao(
+    lote,
+    palete,
+    montador,
+    caixas
+):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE lotes
+        SET
+            palete = ?,
+            montador = ?,
+            caixas = ?,
+            status = 'Finalizado'
+        WHERE lote = ?
+    """, (
+        palete,
+        montador,
+        caixas,
+        lote
+    ))
+
+    conn.commit()
+    conn.close()
+    
 def buscar_lotes_do_dia(data):
     conn = conectar()
     cursor = conn.cursor()
