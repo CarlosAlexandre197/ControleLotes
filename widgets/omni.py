@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PyQt6.QtWidgets import (
     QGroupBox,
     QLineEdit,
