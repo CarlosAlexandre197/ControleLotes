@@ -15,10 +15,13 @@ from widgets.tabela import TabelaWidget
 from widgets.finalizacao import FinalizacaoWidget
 from widgets.indicadores import IndicadoresWidget
 from widgets.omni import OmniWidget
+from widgets.pos_separacao import PosSeparacaoWidget
 
 from banco import (
     salvar_lote,
     buscar_lotes_do_dia,
+    atualizar_separacao,
+    atualizar_pos_separacao,
 )
 
 
@@ -29,6 +32,9 @@ class Interface(QMainWindow):
 
         self.setWindowTitle("Controle de Lotes")
         self.resize(1500, 900)
+
+        # Lote atualmente selecionado
+        self.lote_selecionado = None
 
         self.criar_interface()
         self.conectar_eventos()
@@ -42,7 +48,6 @@ class Interface(QMainWindow):
 
     def criar_interface(self):
 
-        # Widget central
         central = QWidget()
         self.setCentralWidget(central)
 
@@ -84,6 +89,16 @@ class Interface(QMainWindow):
         )
 
         # -----------------------------------------------------
+        # PÓS-SEPARAÇÃO
+        # -----------------------------------------------------
+
+        self.pos_separacao = PosSeparacaoWidget()
+
+        layout_principal.addWidget(
+            self.pos_separacao
+        )
+
+        # -----------------------------------------------------
         # INDICADORES
         # -----------------------------------------------------
 
@@ -110,8 +125,24 @@ class Interface(QMainWindow):
 
     def conectar_eventos(self):
 
+        # Cadastro
         self.cadastro.botao_salvar.clicked.connect(
             self.salvar
+        )
+
+        # Seleção de lote na tabela
+        self.tabela.itemSelectionChanged.connect(
+            self.selecionar_lote
+        )
+
+        # Finalizar separação
+        self.finalizacao.botao_finalizar.clicked.connect(
+            self.finalizar_separacao
+        )
+
+        # Salvar pós-separação
+        self.pos_separacao.botao_salvar.clicked.connect(
+            self.salvar_pos_separacao
         )
 
     # =========================================================
@@ -121,12 +152,21 @@ class Interface(QMainWindow):
     def salvar(self):
 
         lote = self.cadastro.lote.text().strip()
-        quantidade_texto = self.cadastro.quantidade.text().strip()
-        cartoes_texto = self.cadastro.cartoes.text().strip()
-        cancelados_texto = self.cadastro.cancelados.text().strip()
+
+        quantidade_texto = (
+            self.cadastro.quantidade.text().strip()
+        )
+
+        cartoes_texto = (
+            self.cadastro.cartoes.text().strip()
+        )
+
+        cancelados_texto = (
+            self.cadastro.cancelados.text().strip()
+        )
 
         # -----------------------------------------------------
-        # VALIDAÇÃO DO LOTE
+        # VALIDAR LOTE
         # -----------------------------------------------------
 
         if not lote:
@@ -140,7 +180,7 @@ class Interface(QMainWindow):
             return
 
         # -----------------------------------------------------
-        # CONVERTER QUANTIDADE
+        # CONVERTER VALORES
         # -----------------------------------------------------
 
         try:
@@ -192,7 +232,7 @@ class Interface(QMainWindow):
             return
 
         # -----------------------------------------------------
-        # CALCULAR QUANTIDADE FINAL
+        # QUANTIDADE FINAL
         # -----------------------------------------------------
 
         quantidade_final = (
@@ -220,7 +260,7 @@ class Interface(QMainWindow):
         )
 
         # -----------------------------------------------------
-        # SALVAR NO BANCO
+        # SALVAR
         # -----------------------------------------------------
 
         salvar_lote(
@@ -233,7 +273,7 @@ class Interface(QMainWindow):
         )
 
         # -----------------------------------------------------
-        # ATUALIZAR INTERFACE
+        # ATUALIZAR
         # -----------------------------------------------------
 
         self.carregar_lotes_do_dia()
@@ -252,15 +292,15 @@ class Interface(QMainWindow):
     # CARREGAR LOTES DO DIA
     # =========================================================
 
-    # =========================================================
-# CARREGAR LOTES DO DIA
-# =========================================================
-
     def carregar_lotes_do_dia(self):
 
-        data = datetime.now().strftime("%d/%m/%Y")
+        data = datetime.now().strftime(
+            "%d/%m/%Y"
+        )
 
-        lotes = buscar_lotes_do_dia(data)
+        lotes = buscar_lotes_do_dia(
+            data
+        )
 
         self.tabela.setRowCount(0)
 
@@ -268,12 +308,18 @@ class Interface(QMainWindow):
 
             linha = self.tabela.rowCount()
 
-            self.tabela.insertRow(linha)
+            self.tabela.insertRow(
+                linha
+            )
 
             for coluna, valor in enumerate(lote):
 
                 item = QTableWidgetItem(
-                    str(valor if valor is not None else "")
+                    str(
+                        valor
+                        if valor is not None
+                        else ""
+                    )
                 )
 
                 self.tabela.setItem(
@@ -283,12 +329,270 @@ class Interface(QMainWindow):
                 )
 
     # =========================================================
+    # SELECIONAR LOTE
+    # =========================================================
+
+    def selecionar_lote(self):
+
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+
+            self.lote_selecionado = None
+
+            self.pos_separacao.limpar()
+
+            return
+
+        # -----------------------------------------------------
+        # PEGAR NÚMERO DO LOTE
+        # -----------------------------------------------------
+
+        item_lote = self.tabela.item(
+            linha,
+            0
+        )
+
+        if not item_lote:
+
+            return
+
+        lote = item_lote.text()
+
+        self.lote_selecionado = lote
+
+        # -----------------------------------------------------
+        # PEGAR DADOS DO BANCO
+        #
+        # buscar_lotes_do_dia retorna:
+        #
+        # 0 lote
+        # 1 quantidade
+        # 2 cartoes
+        # 3 cancelados
+        # 4 final
+        # 5 palete
+        # 6 montador
+        # 7 caixas
+        # 8 status
+        # -----------------------------------------------------
+
+        dados_lote = None
+
+        data = datetime.now().strftime(
+            "%d/%m/%Y"
+        )
+
+        lotes = buscar_lotes_do_dia(
+            data
+        )
+
+        for dados in lotes:
+
+            if str(dados[0]) == str(lote):
+
+                dados_lote = dados
+
+                break
+
+        if dados_lote is None:
+
+            self.pos_separacao.selecionar_lote(
+                lote
+            )
+
+            return
+
+        # -----------------------------------------------------
+        # POR ENQUANTO AS MARCAÇÕES SERÃO LIDAS
+        # DIRETAMENTE DA TABELA QUANDO AS COLUNAS
+        # FOREM INCLUÍDAS NO RETORNO.
+        #
+        # Como a tabela atual possui somente 9 colunas,
+        # começamos com tudo desmarcado.
+        # -----------------------------------------------------
+
+        self.pos_separacao.selecionar_lote(
+            lote
+        )
+
+    # =========================================================
+    # FINALIZAR SEPARAÇÃO
+    # =========================================================
+
+    def finalizar_separacao(self):
+
+        # -----------------------------------------------------
+        # VERIFICAR LOTE SELECIONADO
+        # -----------------------------------------------------
+
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione um lote na tabela antes de concluir a separação."
+            )
+
+            return
+
+        item_lote = self.tabela.item(
+            linha,
+            0
+        )
+
+        if not item_lote:
+
+            return
+
+        lote = item_lote.text()
+
+        # -----------------------------------------------------
+        # PEGAR DADOS
+        # -----------------------------------------------------
+
+        palete = (
+            self.finalizacao.palete.text().strip()
+        )
+
+        montador = (
+            self.finalizacao.montador.text().strip()
+        )
+
+        caixas_texto = (
+            self.finalizacao.caixas.text().strip()
+        )
+
+        # -----------------------------------------------------
+        # VALIDAR
+        # -----------------------------------------------------
+
+        if not palete:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Informe o palete."
+            )
+
+            return
+
+        if not montador:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Informe o montador."
+            )
+
+            return
+
+        try:
+
+            caixas = int(
+                caixas_texto
+            )
+
+        except ValueError:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "A quantidade de caixas deve ser um número."
+            )
+
+            return
+
+        if caixas < 0:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "A quantidade de caixas não pode ser negativa."
+            )
+
+            return
+
+        # -----------------------------------------------------
+        # ATUALIZAR BANCO
+        # -----------------------------------------------------
+
+        atualizar_separacao(
+            lote,
+            palete,
+            montador,
+            caixas
+        )
+
+        # -----------------------------------------------------
+        # ATUALIZAR TELA
+        # -----------------------------------------------------
+
+        self.carregar_lotes_do_dia()
+
+        self.atualizar_indicadores()
+
+        self.finalizacao.palete.clear()
+        self.finalizacao.montador.clear()
+        self.finalizacao.caixas.clear()
+
+        QMessageBox.information(
+            self,
+            "Separação concluída",
+            f"A separação do lote {lote} foi concluída."
+        )
+
+    # =========================================================
+    # SALVAR PÓS-SEPARAÇÃO
+    # =========================================================
+
+    def salvar_pos_separacao(self):
+
+        dados = (
+            self.pos_separacao.obter_dados()
+        )
+
+        lote = dados["lote"]
+
+        if not lote:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione um lote na tabela."
+            )
+
+            return
+
+        # -----------------------------------------------------
+        # SALVAR NO BANCO
+        # -----------------------------------------------------
+
+        atualizar_pos_separacao(
+            lote,
+            dados["faturado"],
+            dados["embarcado"],
+            dados["pre_autorizacao"],
+            dados["notas_impressas"]
+        )
+
+        QMessageBox.information(
+            self,
+            "Pós-separação",
+            f"As informações do lote {lote} foram salvas."
+        )
+
+    # =========================================================
     # ATUALIZAR INDICADORES
     # =========================================================
 
     def atualizar_indicadores(self):
 
-        total_lotes = self.tabela.rowCount()
+        total_lotes = (
+            self.tabela.rowCount()
+        )
 
         total_pedidos = 0
         total_caixas = 0
@@ -300,7 +604,10 @@ class Interface(QMainWindow):
             self.tabela.rowCount()
         ):
 
-            # Quantidade Final
+            # -------------------------------------------------
+            # QUANTIDADE FINAL
+            # -------------------------------------------------
+
             item_final = self.tabela.item(
                 linha,
                 4
@@ -309,14 +616,19 @@ class Interface(QMainWindow):
             if item_final:
 
                 try:
+
                     total_pedidos += int(
                         item_final.text()
                     )
 
                 except ValueError:
+
                     pass
 
-            # Caixas
+            # -------------------------------------------------
+            # CAIXAS
+            # -------------------------------------------------
+
             item_caixas = self.tabela.item(
                 linha,
                 7
@@ -325,14 +637,19 @@ class Interface(QMainWindow):
             if item_caixas:
 
                 try:
+
                     total_caixas += int(
                         item_caixas.text()
                     )
 
                 except ValueError:
+
                     pass
 
-            # Status
+            # -------------------------------------------------
+            # STATUS
+            # -------------------------------------------------
+
             item_status = self.tabela.item(
                 linha,
                 8
@@ -340,12 +657,16 @@ class Interface(QMainWindow):
 
             if item_status:
 
-                status = item_status.text().lower()
+                status = (
+                    item_status.text().lower()
+                )
 
                 if status == "pendente":
+
                     pendentes += 1
 
                 elif status == "finalizado":
+
                     finalizados += 1
 
         self.indicadores.atualizar(
@@ -363,8 +684,11 @@ class Interface(QMainWindow):
     def limpar_cadastro(self):
 
         self.cadastro.lote.clear()
+
         self.cadastro.quantidade.clear()
+
         self.cadastro.cartoes.clear()
+
         self.cadastro.cancelados.clear()
 
         self.cadastro.lote.setFocus()
