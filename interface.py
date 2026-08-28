@@ -256,31 +256,31 @@ class Interface(QMainWindow):
 # CARREGAR LOTES DO DIA
 # =========================================================
 
-def carregar_lotes_do_dia(self):
+    def carregar_lotes_do_dia(self):
 
-    data = datetime.now().strftime("%d/%m/%Y")
+        data = datetime.now().strftime("%d/%m/%Y")
 
-    lotes = buscar_lotes_do_dia(data)
+        lotes = buscar_lotes_do_dia(data)
 
-    self.tabela.setRowCount(0)
+        self.tabela.setRowCount(0)
 
-    for lote in lotes:
+        for lote in lotes:
 
-        linha = self.tabela.rowCount()
+            linha = self.tabela.rowCount()
 
-        self.tabela.insertRow(linha)
+            self.tabela.insertRow(linha)
 
-        for coluna, valor in enumerate(lote):
+            for coluna, valor in enumerate(lote):
 
-            item = QTableWidgetItem(
-                str(valor if valor is not None else "")
-            )
+                item = QTableWidgetItem(
+                    str(valor if valor is not None else "")
+                )
 
-            self.tabela.setItem(
-                linha,
-                coluna,
-                item
-            )
+                self.tabela.setItem(
+                    linha,
+                    coluna,
+                    item
+                )
 
     # =========================================================
     # ATUALIZAR INDICADORES
