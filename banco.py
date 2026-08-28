@@ -452,6 +452,35 @@ def buscar_omni_do_dia(data):
 
     return dados
 
+def atualizar_pos_separacao(
+    lote,
+    faturado,
+    embarcado,
+    pre_autorizacao,
+    notas_impressas
+):
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE lotes
+        SET
+            faturado = ?,
+            embarcado = ?,
+            pre_autorizacao = ?,
+            notas_impressas = ?
+        WHERE lote = ?
+    """, (
+        faturado,
+        embarcado,
+        pre_autorizacao,
+        notas_impressas,
+        lote
+    ))
+
+    conn.commit()
+    conn.close()
 
 # ============================================================
 # EXCLUIR OMNICHANNEL
