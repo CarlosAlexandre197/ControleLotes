@@ -1,18 +1,23 @@
-import os
 from datetime import datetime
 
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
     QMessageBox,
-    QTableWidgetItem
 )
-from PyQt6.uic import loadUi
+
+from widgets.cadastro import CadastroWidget
+from widgets.tabela import TabelaWidget
+from widgets.finalizacao import FinalizacaoWidget
+from widgets.indicadores import IndicadoresWidget
+from widgets.omni import OmniWidget
 
 from banco import (
-    criar_tabela,
     salvar_lote,
-    buscar_lotes_do_dia
+    buscar_lotes_do_dia,
 )
 
 
@@ -21,59 +26,173 @@ class Interface(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        caminho_ui = os.path.join(
-            os.path.dirname(__file__),
-            "assets",
-            "ui",
-            "main_window.ui"
-        )
+        self.setWindowTitle("Controle de Lotes")
+        self.resize(1500, 900)
 
-        loadUi(caminho_ui, self)
-
-        criar_tabela()
-
-        self.botao_salvar.clicked.connect(self.salvar)
-        self.botao_limpar.clicked.connect(self.limpar_campos)
+        self.criar_interface()
+        self.conectar_eventos()
 
         self.carregar_lotes_do_dia()
-        self.atualizar_totais()
+        self.atualizar_indicadores()
 
+    # =========================================================
+    # CRIAR INTERFACE
+    # =========================================================
 
-    # ==============================
-    # CONFIGURAÇÃO DA TABELA
-    # ==============================
+    def criar_interface(self):
 
-    def configurar_tabela(self):
+        # Widget central
+        central = QWidget()
+        self.setCentralWidget(central)
 
-        self.tabela.setColumnCount(8)
+        layout_principal = QVBoxLayout()
+        central.setLayout(layout_principal)
 
-        self.tabela.setHorizontalHeaderLabels([
-            "Lote",
-            "Quantidade",
-            "Cartões",
-            "Cancelados",
-            "Quantidade Final",
-            "Palete",
-            "Montador",
-            "Caixas"
-        ])
+        # -----------------------------------------------------
+        # PARTE SUPERIOR
+        # -----------------------------------------------------
 
+        linha_superior = QHBoxLayout()
 
-    # ==============================
+        self.cadastro = CadastroWidget()
+        self.finalizacao = FinalizacaoWidget()
+
+        linha_superior.addWidget(
+            self.cadastro,
+            1
+        )
+
+        linha_superior.addWidget(
+            self.finalizacao,
+            1
+        )
+
+        layout_principal.addLayout(
+            linha_superior
+        )
+
+        # -----------------------------------------------------
+        # TABELA
+        # -----------------------------------------------------
+
+        self.tabela = TabelaWidget()
+
+        layout_principal.addWidget(
+            self.tabela,
+            3
+        )
+
+        # -----------------------------------------------------
+        # INDICADORES
+        # -----------------------------------------------------
+
+        self.indicadores = IndicadoresWidget()
+
+        layout_principal.addWidget(
+            self.indicadores
+        )
+
+        # -----------------------------------------------------
+        # OMNICHANNEL
+        # -----------------------------------------------------
+
+        self.omni = OmniWidget()
+
+        layout_principal.addWidget(
+            self.omni,
+            2
+        )
+
+    # =========================================================
+    # CONECTAR EVENTOS
+    # =========================================================
+
+    def conectar_eventos(self):
+
+        self.cadastro.botao_salvar.clicked.connect(
+            self.salvar
+        )
+
+    # =========================================================
     # SALVAR LOTE
-    # ==============================
+    # =========================================================
 
     def salvar(self):
 
-        lote = self.lote.text()
-        quantidade = int(self.quantidade.text())
-        cartoes = int(self.cartoes.text())
-        cancelados = int(self.cancelados.text())
+        lote = self.cadastro.lote.text().strip()
+        quantidade_texto = self.cadastro.quantidade.text().strip()
+        cartoes_texto = self.cadastro.cartoes.text().strip()
+        cancelados_texto = self.cadastro.cancelados.text().strip()
 
-        palete = self.palete.text()
-        montador = self.montador.text()
-        caixas = int(self.caixas.text())
+        # -----------------------------------------------------
+        # VALIDAÇÃO DO LOTE
+        # -----------------------------------------------------
 
+        if not lote:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Informe o número do lote."
+            )
+
+            return
+
+        # -----------------------------------------------------
+        # CONVERTER QUANTIDADE
+        # -----------------------------------------------------
+
+        try:
+
+            quantidade = int(
+                quantidade_texto
+            )
+
+            cartoes = int(
+                cartoes_texto or 0
+            )
+
+            cancelados = int(
+                cancelados_texto or 0
+            )
+
+        except ValueError:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Quantidade, cartões e cancelados devem ser números."
+            )
+
+            return
+
+        # -----------------------------------------------------
+        # VALIDAÇÕES
+        # -----------------------------------------------------
+
+        if quantidade <= 0:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "A quantidade deve ser maior que zero."
+            )
+
+            return
+
+        if cartoes < 0 or cancelados < 0:
+
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Cartões e cancelados não podem ser negativos."
+            )
+
+            return
+
+        # -----------------------------------------------------
+        # CALCULAR QUANTIDADE FINAL
+        # -----------------------------------------------------
 
         quantidade_final = (
             quantidade
@@ -81,18 +200,27 @@ class Interface(QMainWindow):
             - cancelados
         )
 
-
         if quantidade_final < 0:
+
             QMessageBox.warning(
                 self,
                 "Erro",
                 "Quantidade final não pode ser negativa."
             )
+
             return
 
+        # -----------------------------------------------------
+        # DATA
+        # -----------------------------------------------------
 
-        data = datetime.now().strftime("%d/%m/%Y")
+        data = datetime.now().strftime(
+            "%d/%m/%Y"
+        )
 
+        # -----------------------------------------------------
+        # SALVAR NO BANCO
+        # -----------------------------------------------------
 
         salvar_lote(
             lote,
@@ -100,153 +228,156 @@ class Interface(QMainWindow):
             cartoes,
             cancelados,
             quantidade_final,
-            palete,
-            montador,
-            caixas,
             data
         )
 
+        # -----------------------------------------------------
+        # ATUALIZAR INTERFACE
+        # -----------------------------------------------------
 
         self.carregar_lotes_do_dia()
 
-        self.atualizar_totais()
+        self.atualizar_indicadores()
 
-        self.limpar_campos()
+        self.limpar_cadastro()
 
+        QMessageBox.information(
+            self,
+            "Lote cadastrado",
+            f"Lote {lote} cadastrado com sucesso."
+        )
 
-
-    # ==============================
-    # CARREGAR LOTES
-    # ==============================
+    # =========================================================
+    # CARREGAR LOTES DO DIA
+    # =========================================================
 
     def carregar_lotes_do_dia(self):
 
-        data = datetime.now().strftime("%d/%m/%Y")
+        data = datetime.now().strftime(
+            "%d/%m/%Y"
+        )
 
-
-        lotes = buscar_lotes_do_dia(data)
-
+        lotes = buscar_lotes_do_dia(
+            data
+        )
 
         self.tabela.setRowCount(0)
-
 
         for lote in lotes:
 
             linha = self.tabela.rowCount()
 
-            self.tabela.insertRow(linha)
-
+            self.tabela.insertRow(
+                linha
+            )
 
             for coluna, valor in enumerate(lote):
 
                 self.tabela.setItem(
                     linha,
                     coluna,
-                    QTableWidgetItem(str(valor))
-                )
+                    __import__(
+                        "PyQt6.QtWidgets",
+                        fromlist=["QTableWidgetItem"]
+                    ).QTableWidgetItem(
+                        str(
+                            valor if valor is not None else ""
+                        )
+                    )
 
+    # =========================================================
+    # ATUALIZAR INDICADORES
+    # =========================================================
 
+    def atualizar_indicadores(self):
 
-    # ==============================
-    # ATUALIZAR TOTAIS
-    # ==============================
-
-    def atualizar_totais(self):
+        total_lotes = self.tabela.rowCount()
 
         total_pedidos = 0
         total_caixas = 0
 
+        pendentes = 0
+        finalizados = 0
 
-        for linha in range(self.tabela.rowCount()):
+        for linha in range(
+            self.tabela.rowCount()
+        ):
 
-            total_pedidos += int(
-                self.tabela.item(
-                    linha,
-                    4
-                ).text()
+            # Quantidade Final
+            item_final = self.tabela.item(
+                linha,
+                4
             )
 
+            if item_final:
 
-            total_caixas += int(
-                self.tabela.item(
-                    linha,
-                    7
-                ).text()
+                try:
+                    total_pedidos += int(
+                        item_final.text()
+                    )
+
+                except ValueError:
+                    pass
+
+            # Caixas
+            item_caixas = self.tabela.item(
+                linha,
+                7
             )
 
+            if item_caixas:
 
-        self.total_pedidos.setText(
-            str(total_pedidos)
+                try:
+                    total_caixas += int(
+                        item_caixas.text()
+                    )
+
+                except ValueError:
+                    pass
+
+            # Status
+            item_status = self.tabela.item(
+                linha,
+                8
+            )
+
+            if item_status:
+
+                status = item_status.text().lower()
+
+                if status == "pendente":
+                    pendentes += 1
+
+                elif status == "finalizado":
+                    finalizados += 1
+
+        self.indicadores.atualizar(
+            total_lotes,
+            total_pedidos,
+            total_caixas,
+            pendentes,
+            finalizados
         )
 
-        self.total_caixas.setText(
-            str(total_caixas)
-        )
+    # =========================================================
+    # LIMPAR CADASTRO
+    # =========================================================
+
+    def limpar_cadastro(self):
+
+        self.cadastro.lote.clear()
+        self.cadastro.quantidade.clear()
+        self.cadastro.cartoes.clear()
+        self.cadastro.cancelados.clear()
+
+        self.cadastro.lote.setFocus()
 
 
+# =============================================================
+# INICIAR PROGRAMA
+# =============================================================
 
-    # ==============================
-    # LIMPAR CAMPOS
-    # ==============================
-
-    def limpar_campos(self):
-
-        self.lote.clear()
-        self.quantidade.clear()
-        self.cartoes.clear()
-        self.cancelados.clear()
-        self.palete.clear()
-        self.montador.clear()
-        self.caixas.clear()
-    
-    def salvar(self):
-
-        try:
-            lote = self.lote.text().strip()
-
-            quantidade = int(self.quantidade.text() or 0)
-            cartoes = int(self.cartoes.text() or 0)
-            cancelados = int(self.cancelados.text() or 0)
-
-            palete = self.palete.text().strip()
-            montador = self.montador.text().strip()
-            caixas = int(self.caixas.text() or 0)
-
-            quantidade_final = quantidade - cartoes - cancelados
-
-            if quantidade_final < 0:
-                QMessageBox.warning(
-                    self,
-                    "Erro",
-                    "A quantidade final não pode ser negativa."
-                )
-                return
-
-            data = datetime.now().strftime("%d/%m/%Y")
-
-            salvar_lote(
-                lote,
-                quantidade,
-                cartoes,
-                cancelados,
-                quantidade_final,
-                data,
-                ""
-            )
-
-            self.carregar_lotes_do_dia()
-            self.atualizar_totais()
-            self.limpar_campos()
-
-        except ValueError:
-            QMessageBox.warning(
-                self,
-                "Erro",
-                "Preencha os campos numéricos corretamente."
-            )
 if __name__ == "__main__":
-
-    from PyQt6.QtWidgets import QApplication
 
     app = QApplication([])
 
@@ -254,4 +385,4 @@ if __name__ == "__main__":
 
     janela.show()
 
-    app.exec()    
+    app.exec()
