@@ -107,19 +107,22 @@ def criar_tabela():
     ]
 
     novas_colunas = {
-        "faturado":
-            "INTEGER DEFAULT 0",
+    "status":
+        "TEXT DEFAULT 'Pendente'",
 
-        "embarcado":
-            "INTEGER DEFAULT 0",
+    "faturado":
+        "INTEGER DEFAULT 0",
 
-        "pre_autorizacao":
-            "INTEGER DEFAULT 0",
+    "embarcado":
+        "INTEGER DEFAULT 0",
 
-        "notas_impressas":
-            "INTEGER DEFAULT 0"
+    "pre_autorizacao":
+        "INTEGER DEFAULT 0",
+
+    "notas_impressas":
+        "INTEGER DEFAULT 0"
     }
-
+    
     for nome_coluna, tipo in novas_colunas.items():
 
         if nome_coluna not in colunas_existentes:
