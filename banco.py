@@ -447,6 +447,38 @@ def buscar_omni_do_dia(data):
 
     return dados
 
+def atualizar_omni(
+    id_lancamento,
+    quantidade
+):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE omnichannel
+        SET quantidade = ?
+        WHERE id = ?
+    """, (
+        quantidade,
+        id_lancamento
+    ))
+
+    conn.commit()
+    conn.close()
+
+
+def excluir_omni(id_lancamento):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM omnichannel
+        WHERE id = ?
+    """, (id_lancamento,))
+
+    conn.commit()
+    conn.close()
+
 def atualizar_pos_separacao(
     lote,
     faturado,
