@@ -280,7 +280,6 @@ def atualizar_status_lote(
 # ============================================================
 
 def buscar_lotes_do_dia(data):
-
     conn = conectar()
     cursor = conn.cursor()
 
@@ -299,12 +298,8 @@ def buscar_lotes_do_dia(data):
             embarcado,
             pre_autorizacao,
             notas_impressas
-
         FROM lotes
-
         WHERE data = ?
-
-        ORDER BY id
     """, (data,))
 
     dados = cursor.fetchall()
