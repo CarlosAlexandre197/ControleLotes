@@ -344,9 +344,9 @@ class Interface(QMainWindow):
 
             return
 
-        # -----------------------------------------------------
+        # =========================================================
         # PEGAR NÚMERO DO LOTE
-        # -----------------------------------------------------
+        # =========================================================
 
         item_lote = self.tabela.item(
             linha,
@@ -354,30 +354,15 @@ class Interface(QMainWindow):
         )
 
         if not item_lote:
-
             return
 
         lote = item_lote.text()
 
         self.lote_selecionado = lote
 
-        # -----------------------------------------------------
-        # PEGAR DADOS DO BANCO
-        #
-        # buscar_lotes_do_dia retorna:
-        #
-        # 0 lote
-        # 1 quantidade
-        # 2 cartoes
-        # 3 cancelados
-        # 4 final
-        # 5 palete
-        # 6 montador
-        # 7 caixas
-        # 8 status
-        # -----------------------------------------------------
-
-        dados_lote = None
+        # =========================================================
+        # BUSCAR DADOS COMPLETOS DO LOTE
+        # =========================================================
 
         data = datetime.now().strftime(
             "%d/%m/%Y"
@@ -387,6 +372,8 @@ class Interface(QMainWindow):
             data
         )
 
+        dados_lote = None
+
         for dados in lotes:
 
             if str(dados[0]) == str(lote):
@@ -394,6 +381,10 @@ class Interface(QMainWindow):
                 dados_lote = dados
 
                 break
+
+        # =========================================================
+        # SE NÃO ENCONTROU
+        # =========================================================
 
         if dados_lote is None:
 
@@ -403,17 +394,33 @@ class Interface(QMainWindow):
 
             return
 
-        # -----------------------------------------------------
-        # POR ENQUANTO AS MARCAÇÕES SERÃO LIDAS
-        # DIRETAMENTE DA TABELA QUANDO AS COLUNAS
-        # FOREM INCLUÍDAS NO RETORNO.
+        # =========================================================
+        # DADOS DO PÓS-SEPARAÇÃO
         #
-        # Como a tabela atual possui somente 9 colunas,
-        # começamos com tudo desmarcado.
-        # -----------------------------------------------------
+        # 9  = faturado
+        # 10 = embarcado
+        # 11 = pré-autorização
+        # 12 = notas fiscais
+        # =========================================================
+
+        faturado = dados_lote[9]
+
+        embarcado = dados_lote[10]
+
+        pre_autorizacao = dados_lote[11]
+
+        notas_impressas = dados_lote[12]
+
+        # =========================================================
+        # CARREGAR NO PAINEL
+        # =========================================================
 
         self.pos_separacao.selecionar_lote(
-            lote
+            lote,
+            faturado,
+            embarcado,
+            pre_autorizacao,
+            notas_impressas
         )
 
     # =========================================================
