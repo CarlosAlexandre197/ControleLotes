@@ -24,6 +24,8 @@ from banco import (
 
 
 class OmniWidget(QGroupBox):
+    
+    total_alterado = pyqtSignal()
 
     def __init__(self):
         super().__init__("OmniChannel")
