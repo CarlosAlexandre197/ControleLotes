@@ -13,13 +13,14 @@ from PyQt6.QtWidgets import (
     QHeaderView,
     QMessageBox
 )
-from PyQt6.QtCore import Qt
+
 from banco import (
     salvar_omni,
     buscar_omni_do_dia,
     atualizar_omni,
     excluir_omni
 )
+
 
 class OmniWidget(QGroupBox):
 
@@ -196,7 +197,6 @@ class OmniWidget(QGroupBox):
         texto = self.quantidade.text().strip()
 
         if not texto:
-
             return
 
         try:
@@ -223,47 +223,93 @@ class OmniWidget(QGroupBox):
 
             return
 
-        linha = self.tabela.rowCount()
+        # -----------------------------------------------------
+        # DATA E HORA
+        # -----------------------------------------------------
 
-        self.tabela.insertRow(
-            linha
+        agora = datetime.now()
+
+        data = agora.strftime(
+            "%d/%m/%Y"
         )
 
-        id_lancamento = linha + 1
-
-        hora = datetime.now().strftime(
+        hora = agora.strftime(
             "%H:%M"
         )
 
-        self.tabela.setItem(
-            linha,
-            0,
-            QTableWidgetItem(
-                str(id_lancamento)
-            )
+        # -----------------------------------------------------
+        # SALVAR NO BANCO
+        # -----------------------------------------------------
+
+        salvar_omni(
+            quantidade,
+            data,
+            hora
         )
 
-        self.tabela.setItem(
-            linha,
-            1,
-            QTableWidgetItem(
-                str(quantidade)
-            )
-        )
+        # -----------------------------------------------------
+        # ATUALIZAR TABELA
+        # -----------------------------------------------------
 
-        self.tabela.setItem(
-            linha,
-            2,
-            QTableWidgetItem(
-                hora
-            )
-        )
+        self.carregar_do_banco()
 
         self.quantidade.clear()
 
-        self.atualizar_total()
-
         self.quantidade.setFocus()
+
+    # =========================================================
+    # CARREGAR DO BANCO
+    # =========================================================
+
+    def carregar_do_banco(self):
+
+        data = datetime.now().strftime(
+            "%d/%m/%Y"
+        )
+
+        dados = buscar_omni_do_dia(
+            data
+        )
+
+        self.tabela.setRowCount(0)
+
+        for registro in dados:
+
+            id_lancamento = registro[0]
+            quantidade = registro[1]
+            hora = registro[2]
+
+            linha = self.tabela.rowCount()
+
+            self.tabela.insertRow(
+                linha
+            )
+
+            self.tabela.setItem(
+                linha,
+                0,
+                QTableWidgetItem(
+                    str(id_lancamento)
+                )
+            )
+
+            self.tabela.setItem(
+                linha,
+                1,
+                QTableWidgetItem(
+                    str(quantidade)
+                )
+            )
+
+            self.tabela.setItem(
+                linha,
+                2,
+                QTableWidgetItem(
+                    str(hora)
+                )
+            )
+
+        self.atualizar_total()
 
     # =========================================================
     # EDITAR OMNICHANNEL
@@ -319,17 +365,38 @@ class OmniWidget(QGroupBox):
 
             return
 
-        self.tabela.setItem(
+        # -----------------------------------------------------
+        # PEGAR ID REAL DO BANCO
+        # -----------------------------------------------------
+
+        item_id = self.tabela.item(
             linha,
-            1,
-            QTableWidgetItem(
-                str(quantidade)
-            )
+            0
         )
 
-        self.quantidade.clear()
+        if not item_id:
+            return
 
-        self.atualizar_total()
+        id_lancamento = int(
+            item_id.text()
+        )
+
+        # -----------------------------------------------------
+        # ATUALIZAR BANCO
+        # -----------------------------------------------------
+
+        atualizar_omni(
+            id_lancamento,
+            quantidade
+        )
+
+        # -----------------------------------------------------
+        # RECARREGAR
+        # -----------------------------------------------------
+
+        self.carregar_do_banco()
+
+        self.quantidade.clear()
 
         self.quantidade.setFocus()
 
@@ -360,36 +427,37 @@ class OmniWidget(QGroupBox):
         )
 
         if resposta != QMessageBox.StandardButton.Yes:
-
             return
 
-        self.tabela.removeRow(
-            linha
+        # -----------------------------------------------------
+        # PEGAR ID REAL
+        # -----------------------------------------------------
+
+        item_id = self.tabela.item(
+            linha,
+            0
         )
 
-        self.renumerar_ids()
+        if not item_id:
+            return
 
-        self.atualizar_total()
+        id_lancamento = int(
+            item_id.text()
+        )
 
-    # =========================================================
-    # RENUMERAR IDS
-    # =========================================================
+        # -----------------------------------------------------
+        # EXCLUIR DO BANCO
+        # -----------------------------------------------------
 
-    def renumerar_ids(self):
+        excluir_omni(
+            id_lancamento
+        )
 
-        for linha in range(
-            self.tabela.rowCount()
-        ):
+        # -----------------------------------------------------
+        # RECARREGAR
+        # -----------------------------------------------------
 
-            item = QTableWidgetItem(
-                str(linha + 1)
-            )
-
-            self.tabela.setItem(
-                linha,
-                0,
-                item
-            )
+        self.carregar_do_banco()
 
     # =========================================================
     # ATUALIZAR TOTAL
