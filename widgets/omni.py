@@ -14,7 +14,12 @@ from PyQt6.QtWidgets import (
     QMessageBox
 )
 from PyQt6.QtCore import Qt
-
+from banco import (
+    salvar_omni,
+    buscar_omni_do_dia,
+    atualizar_omni,
+    excluir_omni
+)
 
 class OmniWidget(QGroupBox):
 
