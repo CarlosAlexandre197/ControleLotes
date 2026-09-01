@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QFrame
 )
+
 from PyQt6.QtCore import Qt
 
 
@@ -47,6 +48,16 @@ class IndicadoresWidget(QWidget):
             "0"
         )
 
+        self.lbl_total_omni = self.criar_indicador(
+            "TOTAL OMNICHANNEL",
+            "0"
+        )
+
+        self.lbl_total_geral = self.criar_indicador(
+            "TOTAL GERAL DE PEDIDOS",
+            "0"
+        )
+
     # ==================================
     # CRIA UM CARTÃO DE INDICADOR
     # ==================================
@@ -54,6 +65,7 @@ class IndicadoresWidget(QWidget):
     def criar_indicador(self, titulo, valor):
 
         frame = QFrame()
+
         frame.setFrameShape(
             QFrame.Shape.StyledPanel
         )
@@ -76,13 +88,18 @@ class IndicadoresWidget(QWidget):
             f"valor_{titulo.lower().replace(' ', '_')}"
         )
 
-        layout.addWidget(label_titulo)
-        layout.addWidget(label_valor)
+        layout.addWidget(
+            label_titulo
+        )
 
-        frame.setLayout(layout)
+        layout.addWidget(
+            label_valor
+        )
 
-        # Guardamos o valor para podermos
-        # atualizá-lo posteriormente.
+        frame.setLayout(
+            layout
+        )
+
         frame.valor = label_valor
 
         return frame
@@ -95,21 +112,71 @@ class IndicadoresWidget(QWidget):
 
         layout_principal = QVBoxLayout()
 
+        # ----------------------------------
+        # PRIMEIRA LINHA
+        # ----------------------------------
+
         linha1 = QHBoxLayout()
 
-        linha1.addWidget(self.lbl_total_lotes)
-        linha1.addWidget(self.lbl_total_pedidos)
-        linha1.addWidget(self.lbl_total_caixas)
+        linha1.addWidget(
+            self.lbl_total_lotes
+        )
+
+        linha1.addWidget(
+            self.lbl_total_pedidos
+        )
+
+        linha1.addWidget(
+            self.lbl_total_caixas
+        )
+
+        # ----------------------------------
+        # SEGUNDA LINHA
+        # ----------------------------------
 
         linha2 = QHBoxLayout()
 
-        linha2.addWidget(self.lbl_pendentes)
-        linha2.addWidget(self.lbl_finalizados)
+        linha2.addWidget(
+            self.lbl_pendentes
+        )
 
-        layout_principal.addLayout(linha1)
-        layout_principal.addLayout(linha2)
+        linha2.addWidget(
+            self.lbl_finalizados
+        )
 
-        self.setLayout(layout_principal)
+        linha2.addWidget(
+            self.lbl_total_omni
+        )
+
+        # ----------------------------------
+        # TERCEIRA LINHA
+        # ----------------------------------
+
+        linha3 = QHBoxLayout()
+
+        linha3.addWidget(
+            self.lbl_total_geral
+        )
+
+        # ----------------------------------
+        # ADICIONAR AO LAYOUT PRINCIPAL
+        # ----------------------------------
+
+        layout_principal.addLayout(
+            linha1
+        )
+
+        layout_principal.addLayout(
+            linha2
+        )
+
+        layout_principal.addLayout(
+            linha3
+        )
+
+        self.setLayout(
+            layout_principal
+        )
 
     # ==================================
     # ATUALIZAÇÃO DOS INDICADORES
@@ -121,8 +188,14 @@ class IndicadoresWidget(QWidget):
         total_pedidos,
         total_caixas,
         pendentes,
-        finalizados
+        finalizados,
+        total_omni=0
     ):
+
+        total_geral = (
+            total_pedidos
+            + total_omni
+        )
 
         self.lbl_total_lotes.valor.setText(
             str(total_lotes)
@@ -142,4 +215,12 @@ class IndicadoresWidget(QWidget):
 
         self.lbl_finalizados.valor.setText(
             str(finalizados)
+        )
+
+        self.lbl_total_omni.valor.setText(
+            str(total_omni)
+        )
+
+        self.lbl_total_geral.valor.setText(
+            str(total_geral)
         )
