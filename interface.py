@@ -41,6 +41,7 @@ class Interface(QMainWindow):
 
         self.carregar_lotes_do_dia()
         self.atualizar_indicadores()
+        self.omni.carregar_do_banco()
 
     # =========================================================
     # CRIAR INTERFACE
