@@ -686,7 +686,7 @@ class Interface(QMainWindow):
             pendentes,
             finalizados,
             total_omni
-)
+        )
     # =========================================================
     # LIMPAR CADASTRO
     # =========================================================
