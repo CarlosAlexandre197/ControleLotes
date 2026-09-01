@@ -255,9 +255,10 @@ class OmniWidget(QGroupBox):
         # -----------------------------------------------------
 
         self.carregar_do_banco()
+        
+        self.total_alterado.emit()
 
         self.quantidade.clear()
-
         self.quantidade.setFocus()
 
     # =========================================================
