@@ -40,8 +40,8 @@ class Interface(QMainWindow):
         self.conectar_eventos()
 
         self.carregar_lotes_do_dia()
-        self.atualizar_indicadores()
         self.omni.carregar_do_banco()
+        self.atualizar_indicadores()
 
     # =========================================================
     # CRIAR INTERFACE
