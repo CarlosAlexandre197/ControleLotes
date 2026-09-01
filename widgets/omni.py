@@ -1,5 +1,4 @@
 from PyQt6.QtCore import pyqtSignal
-
 from datetime import datetime
 
 from PyQt6.QtWidgets import (
