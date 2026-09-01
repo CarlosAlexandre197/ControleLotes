@@ -677,14 +677,16 @@ class Interface(QMainWindow):
 
                     finalizados += 1
 
+        total_omni = self.omni.obter_total()
+
         self.indicadores.atualizar(
             total_lotes,
             total_pedidos,
             total_caixas,
             pendentes,
-            finalizados
-        )
-
+            finalizados,
+            total_omni
+)
     # =========================================================
     # LIMPAR CADASTRO
     # =========================================================
