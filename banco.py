@@ -550,6 +550,47 @@ def atualizar_omni(
 
     conn.commit()
     conn.close()
+    
+def atualizar_lote(
+    lote_original,
+    lote,
+    quantidade,
+    cartoes,
+    cancelados,
+    quantidade_final,
+    palete,
+    montador,
+    caixas
+):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        UPDATE lotes
+        SET
+            lote = ?,
+            quantidade = ?,
+            cartoes = ?,
+            cancelados = ?,
+            final = ?,
+            palete = ?,
+            montador = ?,
+            caixas = ?
+        WHERE lote = ?
+    """, (
+        lote,
+        quantidade,
+        cartoes,
+        cancelados,
+        quantidade_final,
+        palete,
+        montador,
+        caixas,
+        lote_original
+    ))
+
+    conexao.commit()
+    conexao.close()
 
 
 # ============================================================
