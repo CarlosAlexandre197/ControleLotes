@@ -21,6 +21,8 @@ from widgets.pos_separacao import PosSeparacaoWidget
 from banco import (
     salvar_lote,
     buscar_lotes_do_dia,
+    atualizar_lote,
+    excluir_lote_db,
     atualizar_separacao,
     atualizar_pos_separacao,
 )
