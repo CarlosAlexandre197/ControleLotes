@@ -130,6 +130,10 @@ class Interface(QMainWindow):
         self.cadastro.botao_salvar.clicked.connect(
             self.salvar
         )
+        
+        self.omni.total_alterado.connect(
+            self.atualizar_indicadores
+        )
 
         # Seleção de lote na tabela
         self.tabela.itemSelectionChanged.connect(
