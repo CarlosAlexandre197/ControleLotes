@@ -91,6 +91,16 @@ class Interface(QMainWindow):
             self.tabela,
             3
         )
+        
+        linha_acoes = QHBoxLayout()
+
+        self.botao_editar_lote = QPushButton("✏️ Editar Lote")
+        self.botao_excluir_lote = QPushButton("🗑️ Excluir Lote")
+
+        linha_acoes.addWidget(self.botao_editar_lote)
+        linha_acoes.addWidget(self.botao_excluir_lote)
+
+        layout_principal.addLayout(linha_acoes)
 
         # -----------------------------------------------------
         # PÓS-SEPARAÇÃO
