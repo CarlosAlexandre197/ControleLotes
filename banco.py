@@ -593,6 +593,18 @@ def atualizar_lote(
     conexao.close()
 
 
+def excluir_lote_db(lote):
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        DELETE FROM lotes
+        WHERE lote = ?
+    """, (lote,))
+
+    conexao.commit()
+    conexao.close()
+
 # ============================================================
 # INICIALIZAÇÃO DO BANCO
 # ============================================================
