@@ -15,6 +15,7 @@ from widgets.tabela import TabelaWidget
 from widgets.finalizacao import FinalizacaoWidget
 from widgets.indicadores import IndicadoresWidget
 from widgets.omni import OmniWidget
+from widgets.editar_lote import EditarLoteDialog
 from widgets.pos_separacao import PosSeparacaoWidget
 
 from banco import (
