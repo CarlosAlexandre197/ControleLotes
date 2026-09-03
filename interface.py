@@ -709,6 +709,57 @@ class Interface(QMainWindow):
             finalizados,
             total_omni
         )
+        
+    def editar_lote(self):
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione um lote na tabela para editar."
+            )
+            return
+
+        dados_lote = []
+
+        for coluna in range(self.tabela.columnCount()):
+            item = self.tabela.item(linha, coluna)
+
+            if item:
+                dados_lote.append(item.text())
+            else:
+                dados_lote.append("")
+
+        dialogo = EditarLoteDialog(
+            dados_lote,
+            self
+        )
+
+        if dialogo.exec():
+
+            dados = dialogo.resultado
+
+            atualizar_lote(
+                dados["lote_original"],
+                dados["lote"],
+                dados["quantidade"],
+                dados["cartoes"],
+                dados["cancelados"],
+                dados["quantidade_final"],
+                dados["palete"],
+                dados["montador"],
+                dados["caixas"]
+            )
+
+            self.carregar_lotes_do_dia()
+            self.atualizar_indicadores()
+
+            QMessageBox.information(
+                self,
+                "Lote atualizado",
+                f"Lote {dados['lote']} atualizado com sucesso."
+            )
     # =========================================================
     # LIMPAR CADASTRO
     # =========================================================
