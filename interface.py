@@ -7,7 +7,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QMessageBox,
-    QTableWidgetItem
+    QTableWidgetItem,
+     QPushButton
 )
 
 from widgets.cadastro import CadastroWidget
