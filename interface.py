@@ -145,6 +145,10 @@ class Interface(QMainWindow):
             self.salvar
         )
         
+        self.botao_editar_lote.clicked.connect(
+            self.editar_lote
+        )
+        
         self.omni.total_alterado.connect(
             self.atualizar_indicadores
         )
