@@ -815,6 +815,95 @@ class Interface(QMainWindow):
             "Lote excluído",
             f"Lote {lote} excluído com sucesso."
         )
+        
+    def finalizar_separacao(self):
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione um lote na tabela para finalizar."
+            )
+            return
+
+        item_lote = self.tabela.item(linha, 0)
+
+        if not item_lote:
+            QMessageBox.warning(
+                self,
+                "Erro",
+                "Não foi possível identificar o lote selecionado."
+            )
+            return
+
+        lote = item_lote.text()
+
+        palete = self.finalizacao.palete.text().strip()
+        montador = self.finalizacao.montador.text().strip()
+        caixas_texto = self.finalizacao.caixas.text().strip()
+
+        if not palete:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Informe o número do palete."
+            )
+            return
+
+        if not montador:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Informe o nome do montador."
+            )
+            return
+
+        if not caixas_texto:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Informe a quantidade de caixas."
+            )
+            return
+
+        try:
+            caixas = int(caixas_texto)
+        except ValueError:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "A quantidade de caixas deve ser um número."
+            )
+            return
+
+        if caixas < 0:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "A quantidade de caixas não pode ser negativa."
+            )
+            return
+
+        atualizar_separacao(
+            lote,
+            palete,
+            montador,
+            caixas
+        )
+
+        self.carregar_lotes_do_dia()
+        self.atualizar_indicadores()
+
+        self.finalizacao.palete.clear()
+        self.finalizacao.montador.clear()
+        self.finalizacao.caixas.clear()
+
+        QMessageBox.information(
+            self,
+            "Separação concluída",
+            f"A separação do lote {lote} foi concluída com sucesso."
+        )
     # =========================================================
     # LIMPAR CADASTRO
     # =========================================================
