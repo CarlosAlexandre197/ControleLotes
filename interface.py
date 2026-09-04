@@ -149,6 +149,10 @@ class Interface(QMainWindow):
             self.editar_lote
         )
         
+        self.botao_excluir_lote.clicked.connect(
+            self.excluir_lote
+        )
+        
         self.omni.total_alterado.connect(
             self.atualizar_indicadores
         )
