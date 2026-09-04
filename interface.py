@@ -156,6 +156,10 @@ class Interface(QMainWindow):
         self.omni.total_alterado.connect(
             self.atualizar_indicadores
         )
+        
+        self.finalizacao.botao_finalizar.clicked.connect(
+            self.finalizar_separacao
+        )
 
         # Seleção de lote na tabela
         self.tabela.itemSelectionChanged.connect(
