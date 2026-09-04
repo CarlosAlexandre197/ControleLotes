@@ -764,6 +764,53 @@ class Interface(QMainWindow):
                 "Lote atualizado",
                 f"Lote {dados['lote']} atualizado com sucesso."
             )
+            
+    def excluir_lote(self):
+        linha = self.tabela.currentRow()
+
+        if linha < 0:
+            QMessageBox.warning(
+                self,
+                "Atenção",
+                "Selecione um lote na tabela para excluir."
+            )
+            return
+
+        item_lote = self.tabela.item(linha, 0)
+
+        if not item_lote:
+            QMessageBox.warning(
+                self,
+                "Erro",
+                "Não foi possível identificar o lote selecionado."
+            )
+            return
+
+        lote = item_lote.text()
+
+        resposta = QMessageBox.question(
+            self,
+            "Confirmar exclusão",
+            f"Tem certeza que deseja excluir o lote {lote}?\n\n"
+            "Essa ação removerá o lote e todas as informações "
+            "relacionadas a ele.",
+            QMessageBox.StandardButton.Yes |
+            QMessageBox.StandardButton.No
+        )
+
+        if resposta != QMessageBox.StandardButton.Yes:
+            return
+
+        excluir_lote_db(lote)
+
+        self.carregar_lotes_do_dia()
+        self.atualizar_indicadores()
+
+        QMessageBox.information(
+            self,
+            "Lote excluído",
+            f"Lote {lote} excluído com sucesso."
+        )
     # =========================================================
     # LIMPAR CADASTRO
     # =========================================================
