@@ -62,3 +62,10 @@ class TabelaWidget(QTableWidget):
         self.setSizeAdjustPolicy(
             QTableWidget.SizeAdjustPolicy.AdjustToContents
         )
+        
+        self.setStyleSheet("""
+            QTableWidget {
+                selection-background-color: #cfe8ff;
+                selection-color: #1f1f1f;
+            }
+        """)
