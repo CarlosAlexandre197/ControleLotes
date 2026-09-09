@@ -41,6 +41,7 @@ class Interface(QMainWindow):
         self.lote_selecionado = None
 
         self.criar_interface()
+        self.aplicar_estilo()
         self.conectar_eventos()
 
         self.carregar_lotes_do_dia()
