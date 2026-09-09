@@ -126,6 +126,13 @@ class OmniWidget(QGroupBox):
         self.tabela.setAlternatingRowColors(
             True
         )
+        
+        self.tabela.setStyleSheet("""
+            QTableWidget {
+                selection-background-color: #cfe8ff;
+                selection-color: #1f1f1f;
+            }
+        """)
 
     # =========================================================
     # LAYOUT
