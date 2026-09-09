@@ -134,6 +134,83 @@ class Interface(QMainWindow):
             self.omni,
             2
         )
+        
+    def aplicar_estilo(self):
+
+        self.setStyleSheet("""
+            /* ==============================
+            GRUPOS
+            ============================== */
+
+            QGroupBox {
+                background-color: #ffffff;
+                border: 1px solid #c8c8c8;
+                border-radius: 5px;
+                margin-top: 18px;
+                padding-top: 8px;
+                font-weight: bold;
+            }
+
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 0px;
+                top: 0px;
+                padding: 5px 12px;
+                color: white;
+                background-color: #1976d2;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+            }
+
+            /* ==============================
+            CAMPOS
+            ============================== */
+
+            QLineEdit {
+                border: 1px solid #c8c8c8;
+                border-radius: 4px;
+                padding: 5px;
+                background-color: white;
+            }
+
+            QLineEdit:focus {
+                border: 1px solid #1976d2;
+            }
+
+            /* ==============================
+            BOTÕES
+            ============================== */
+
+            QPushButton {
+                border: 1px solid #c8c8c8;
+                border-radius: 4px;
+                padding: 6px 12px;
+                background-color: #f5f5f5;
+            }
+
+            QPushButton:hover {
+                background-color: #e3f2fd;
+            }
+
+            /* ==============================
+            TABELA
+            ============================== */
+
+            QTableWidget {
+                border: 1px solid #d0d0d0;
+                gridline-color: #dddddd;
+                selection-background-color: #cfe8ff;
+                selection-color: #1f1f1f;
+            }
+
+            QHeaderView::section {
+                background-color: #1976d2;
+                color: white;
+                padding: 6px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
 
     # =========================================================
     # CONECTAR EVENTOS
