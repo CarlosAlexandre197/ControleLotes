@@ -29,6 +29,8 @@ class OmniWidget(QGroupBox):
 
     def __init__(self):
         super().__init__("OmniChannel")
+        
+        self.setMinimumHeight(220)
 
         self.criar_componentes()
         self.criar_layout()
@@ -84,6 +86,7 @@ class OmniWidget(QGroupBox):
         )
 
         self.tabela = QTableWidget()
+        self.tabela.setMinimumHeight(130)
 
         self.tabela.setObjectName(
             "tabela_omni"
