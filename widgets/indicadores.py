@@ -16,10 +16,7 @@ class IndicadoresWidget(QWidget):
 
         self.criar_componentes()
         self.criar_layout()
-
-    # ==================================
-    # CRIAÇÃO DOS COMPONENTES
-    # ==================================
+        self.aplicar_estilo()
 
     def criar_componentes(self):
 
@@ -58,129 +55,91 @@ class IndicadoresWidget(QWidget):
             "0"
         )
 
-    # ==================================
-    # CRIA UM CARTÃO DE INDICADOR
-    # ==================================
-
     def criar_indicador(self, titulo, valor):
 
         frame = QFrame()
-
-        frame.setFrameShape(
-            QFrame.Shape.StyledPanel
-        )
+        frame.setObjectName("card")
 
         layout = QVBoxLayout()
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(3)
 
         label_titulo = QLabel(titulo)
-
         label_titulo.setAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
         label_valor = QLabel(valor)
-
         label_valor.setAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
 
-        label_valor.setObjectName(
-            f"valor_{titulo.lower().replace(' ', '_')}"
-        )
+        label_valor.setObjectName("valor")
 
-        layout.addWidget(
-            label_titulo
-        )
+        layout.addWidget(label_titulo)
+        layout.addWidget(label_valor)
 
-        layout.addWidget(
-            label_valor
-        )
-
-        frame.setLayout(
-            layout
-        )
+        frame.setLayout(layout)
 
         frame.valor = label_valor
 
         return frame
 
-    # ==================================
-    # LAYOUT
-    # ==================================
-
     def criar_layout(self):
 
         layout_principal = QVBoxLayout()
-
-        # ----------------------------------
-        # PRIMEIRA LINHA
-        # ----------------------------------
+        layout_principal.setSpacing(8)
 
         linha1 = QHBoxLayout()
+        linha1.setSpacing(8)
 
-        linha1.addWidget(
-            self.lbl_total_lotes
-        )
-
-        linha1.addWidget(
-            self.lbl_total_pedidos
-        )
-
-        linha1.addWidget(
-            self.lbl_total_caixas
-        )
-
-        # ----------------------------------
-        # SEGUNDA LINHA
-        # ----------------------------------
+        linha1.addWidget(self.lbl_total_lotes)
+        linha1.addWidget(self.lbl_total_pedidos)
+        linha1.addWidget(self.lbl_total_caixas)
 
         linha2 = QHBoxLayout()
+        linha2.setSpacing(8)
 
-        linha2.addWidget(
-            self.lbl_pendentes
-        )
-
-        linha2.addWidget(
-            self.lbl_finalizados
-        )
-
-        linha2.addWidget(
-            self.lbl_total_omni
-        )
-
-        # ----------------------------------
-        # TERCEIRA LINHA
-        # ----------------------------------
+        linha2.addWidget(self.lbl_pendentes)
+        linha2.addWidget(self.lbl_finalizados)
+        linha2.addWidget(self.lbl_total_omni)
 
         linha3 = QHBoxLayout()
+        linha3.setSpacing(8)
 
-        linha3.addWidget(
-            self.lbl_total_geral
-        )
+        linha3.addWidget(self.lbl_total_geral)
 
-        # ----------------------------------
-        # ADICIONAR AO LAYOUT PRINCIPAL
-        # ----------------------------------
+        layout_principal.addLayout(linha1)
+        layout_principal.addLayout(linha2)
+        layout_principal.addLayout(linha3)
 
-        layout_principal.addLayout(
-            linha1
-        )
+        self.setLayout(layout_principal)
 
-        layout_principal.addLayout(
-            linha2
-        )
+    def aplicar_estilo(self):
 
-        layout_principal.addLayout(
-            linha3
-        )
+        self.setStyleSheet("""
+            QFrame#card {
+                background-color: white;
+                border: 1px solid #d9d9d9;
+                border-radius: 8px;
+            }
 
-        self.setLayout(
-            layout_principal
-        )
+            QFrame#card:hover {
+                border: 1px solid #1976d2;
+            }
 
-    # ==================================
-    # ATUALIZAÇÃO DOS INDICADORES
-    # ==================================
+            QFrame#card QLabel {
+                border: none;
+                background: transparent;
+            }
+
+            QFrame#card QLabel#valor {
+                font-size: 24px;
+                font-weight: bold;
+                color: #1976d2;
+                padding: 3px;
+            }
+        """)
 
     def atualizar(
         self,
@@ -192,10 +151,7 @@ class IndicadoresWidget(QWidget):
         total_omni=0
     ):
 
-        total_geral = (
-            total_pedidos
-            + total_omni
-        )
+        total_geral = total_pedidos + total_omni
 
         self.lbl_total_lotes.valor.setText(
             str(total_lotes)
