@@ -91,7 +91,7 @@ class Interface(QMainWindow):
 
         layout_principal.addWidget(
             self.tabela,
-            3
+            4
         )
         
         linha_acoes = QHBoxLayout()
@@ -132,7 +132,7 @@ class Interface(QMainWindow):
 
         layout_principal.addWidget(
             self.omni,
-            2
+            1
         )
         
     def aplicar_estilo(self):
