@@ -143,41 +143,29 @@ class OmniWidget(QGroupBox):
 
     def criar_layout(self):
 
-        entrada_layout = QHBoxLayout()
+        layout_principal = QVBoxLayout()
+        layout_principal.setContentsMargins(8, 8, 8, 8)
+        layout_principal.setSpacing(6)
 
-        entrada_layout.addWidget(
-            self.quantidade
-        )
+        # Linha de entrada e botões
+        linha_controles = QHBoxLayout()
+        linha_controles.setSpacing(6)
 
-        entrada_layout.addWidget(
-            self.botao_adicionar
-        )
+        linha_controles.addWidget(self.quantidade)
 
-        entrada_layout.addWidget(
-            self.botao_editar
-        )
+        linha_controles.addWidget(self.btn_add_omni)
+        linha_controles.addWidget(self.btn_editar_omni)
+        linha_controles.addWidget(self.btn_excluir_omni)
 
-        entrada_layout.addWidget(
-            self.botao_excluir
-        )
+        layout_principal.addLayout(linha_controles)
 
-        layout = QVBoxLayout()
+        # Tabela
+        layout_principal.addWidget(self.tabela, 1)
 
-        layout.addLayout(
-            entrada_layout
-        )
+        # Total
+        layout_principal.addWidget(self.lbl_total)
 
-        layout.addWidget(
-            self.tabela
-        )
-
-        layout.addWidget(
-            self.lbl_total
-        )
-
-        self.setLayout(
-            layout
-        )
+        self.setLayout(layout_principal)
 
     # =========================================================
     # CONECTAR EVENTOS
