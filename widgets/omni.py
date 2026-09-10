@@ -162,9 +162,6 @@ class OmniWidget(QGroupBox):
         # Tabela
         layout_principal.addWidget(self.tabela, 1)
 
-        # Total
-        layout_principal.addWidget(self.lbl_total)
-
         self.setLayout(layout_principal)
 
     # =========================================================
