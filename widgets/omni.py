@@ -153,9 +153,9 @@ class OmniWidget(QGroupBox):
 
         linha_controles.addWidget(self.quantidade)
 
-        linha_controles.addWidget(self.btn_add_omni)
-        linha_controles.addWidget(self.btn_editar_omni)
-        linha_controles.addWidget(self.btn_excluir_omni)
+        linha_controles.addWidget(self.botao_adicionar)
+        linha_controles.addWidget(self.botao_editar)
+        linha_controles.addWidget(self.botao_excluir)
 
         layout_principal.addLayout(linha_controles)
 
