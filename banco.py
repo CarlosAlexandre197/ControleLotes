@@ -8,11 +8,16 @@ from pathlib import Path
 # CONFIGURAÇÃO DO BANCO
 # ============================================================
 
-PASTA_DB = "database"
-ARQUIVO_DB = os.path.join(
-    PASTA_DB,
-    "controle_lotes.db"
-)
+# Pasta onde o programa está instalado
+if getattr(sys, "frozen", False):
+    PASTA_PROGRAMA = Path(sys.executable).resolve().parent
+else:
+    PASTA_PROGRAMA = Path(__file__).resolve().parent
+
+
+PASTA_DB = PASTA_PROGRAMA / "database"
+
+ARQUIVO_DB = PASTA_DB / "controle_lotes.db"
 
 
 # ============================================================
@@ -21,10 +26,9 @@ ARQUIVO_DB = os.path.join(
 
 def conectar():
 
-    if not os.path.exists(PASTA_DB):
-        os.makedirs(PASTA_DB)
+    PASTA_DB.mkdir(parents=True, exist_ok=True)
 
-    return sqlite3.connect(ARQUIVO_DB)
+    return sqlite3.connect(str(ARQUIVO_DB))
 
 
 # ============================================================
