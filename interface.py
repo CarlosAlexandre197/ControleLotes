@@ -408,15 +408,31 @@ class Interface(QMainWindow):
 
         self.tabela.setRowCount(0)
 
-        for lote in lotes:
+        for numero, lote in enumerate(lotes, start=1):
 
             linha = self.tabela.rowCount()
 
-            self.tabela.insertRow(
-                linha
+            self.tabela.insertRow(linha)
+
+            # -----------------------------------------
+            # Nº SEQUENCIAL
+            # -----------------------------------------
+
+            item_numero = QTableWidgetItem(
+                str(numero)
             )
 
-            for coluna, valor in enumerate(lote):
+            self.tabela.setItem(
+                linha,
+                0,
+                item_numero
+            )
+
+            # -----------------------------------------
+            # DADOS DO LOTE
+            # -----------------------------------------
+
+            for coluna, valor in enumerate(lote, start=1):
 
                 item = QTableWidgetItem(
                     str(
