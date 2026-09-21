@@ -18,9 +18,10 @@ class TabelaWidget(QTableWidget):
 
     def configurar_tabela(self):
 
-        self.setColumnCount(9)
+        self.setColumnCount(10)
 
         self.setHorizontalHeaderLabels([
+            "Nº",
             "Lote",
             "Quantidade",
             "Cartões",
@@ -52,17 +53,17 @@ class TabelaWidget(QTableWidget):
             QHeaderView.ResizeMode.Stretch
         )
 
-        # Esconde a numeração das linhas
+        # Esconde a numeração lateral das linhas
         self.verticalHeader().setVisible(False)
 
-        # Alterna a cor das linhas para facilitar a leitura
+        # Alterna a cor das linhas
         self.setAlternatingRowColors(True)
 
         # A tabela ocupa todo o espaço disponível
         self.setSizeAdjustPolicy(
             QTableWidget.SizeAdjustPolicy.AdjustToContents
         )
-        
+
         self.setStyleSheet("""
             QTableWidget {
                 selection-background-color: #cfe8ff;
