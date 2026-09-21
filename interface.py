@@ -470,7 +470,7 @@ class Interface(QMainWindow):
 
         item_lote = self.tabela.item(
             linha,
-            0
+            1
         )
 
         if not item_lote:
