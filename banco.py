@@ -306,6 +306,7 @@ def buscar_lotes_do_dia(data):
             notas_impressas
         FROM lotes
         WHERE data = ?
+        ORDER BY id ASC
     """, (data,))
 
     dados = cursor.fetchall()
