@@ -730,7 +730,7 @@ class Interface(QMainWindow):
 
             item_final = self.tabela.item(
                 linha,
-                4
+                5
             )
 
             if item_final:
@@ -751,7 +751,7 @@ class Interface(QMainWindow):
 
             item_caixas = self.tabela.item(
                 linha,
-                7
+                8
             )
 
             if item_caixas:
@@ -772,7 +772,7 @@ class Interface(QMainWindow):
 
             item_status = self.tabela.item(
                 linha,
-                8
+                9
             )
 
             if item_status:
@@ -862,7 +862,7 @@ class Interface(QMainWindow):
             )
             return
 
-        item_lote = self.tabela.item(linha, 0)
+        item_lote = self.tabela.item(linha, 1)
 
         if not item_lote:
             QMessageBox.warning(
