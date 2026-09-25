@@ -45,27 +45,54 @@ class EditarLoteDialog(QDialog):
     def carregar_dados(self):
 
         # Ordem das colunas da tabela:
-        # 0 Lote
-        # 1 Quantidade
-        # 2 Cartões
-        # 3 Cancelados
-        # 4 Quantidade Final
-        # 5 Palete
-        # 6 Montador
-        # 7 Caixas
-        # 8 Status
+        #
+        # 0 = Nº
+        # 1 = Lote
+        # 2 = Quantidade
+        # 3 = Cartões
+        # 4 = Cancelados
+        # 5 = Quantidade Final
+        # 6 = Palete
+        # 7 = Montador
+        # 8 = Caixas
+        # 9 = Status
 
-        self.lote.setText(str(self.dados_lote[0]))
-        self.quantidade.setText(str(self.dados_lote[1]))
-        self.cartoes.setText(str(self.dados_lote[2]))
-        self.cancelados.setText(str(self.dados_lote[3]))
-        self.quantidade_final.setText(str(self.dados_lote[4]))
-        self.palete.setText(str(self.dados_lote[5] or ""))
-        self.montador.setText(str(self.dados_lote[6] or ""))
-        self.caixas.setText(str(self.dados_lote[7] or ""))
+        self.lote.setText(
+            str(self.dados_lote[1])
+        )
+
+        self.quantidade.setText(
+            str(self.dados_lote[2])
+        )
+
+        self.cartoes.setText(
+            str(self.dados_lote[3])
+        )
+
+        self.cancelados.setText(
+            str(self.dados_lote[4])
+        )
+
+        self.quantidade_final.setText(
+            str(self.dados_lote[5])
+        )
+
+        self.palete.setText(
+            str(self.dados_lote[6] or "")
+        )
+
+        self.montador.setText(
+            str(self.dados_lote[7] or "")
+        )
+
+        self.caixas.setText(
+            str(self.dados_lote[8] or "")
+        )
 
         # Guardamos o lote original para o UPDATE
-        self.lote_original = str(self.dados_lote[0])
+        self.lote_original = str(
+            self.dados_lote[1]
+        )
 
     def criar_layout(self):
 
