@@ -12,10 +12,6 @@ class TabelaWidget(QTableWidget):
 
         self.configurar_tabela()
 
-    # ==================================
-    # CONFIGURAÇÃO DA TABELA
-    # ==================================
-
     def configurar_tabela(self):
 
         self.setColumnCount(10)
@@ -33,33 +29,26 @@ class TabelaWidget(QTableWidget):
             "Status"
         ])
 
-        # Seleciona a linha inteira
         self.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
         )
 
-        # Permite selecionar apenas uma linha
         self.setSelectionMode(
             QAbstractItemView.SelectionMode.SingleSelection
         )
 
-        # Não permite editar diretamente na tabela
         self.setEditTriggers(
             QAbstractItemView.EditTrigger.NoEditTriggers
         )
 
-        # Ajusta automaticamente a largura das colunas
         self.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch
         )
 
-        # Esconde a numeração lateral das linhas
         self.verticalHeader().setVisible(False)
 
-        # Alterna a cor das linhas
         self.setAlternatingRowColors(True)
 
-        # A tabela ocupa todo o espaço disponível
         self.setSizeAdjustPolicy(
             QTableWidget.SizeAdjustPolicy.AdjustToContents
         )
