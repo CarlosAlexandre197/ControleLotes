@@ -395,7 +395,6 @@ class Interface(QMainWindow):
     # =========================================================
     # CARREGAR LOTES DO DIA
     # =========================================================
-
     def carregar_lotes_do_dia(self):
 
         data = datetime.now().strftime(
@@ -414,39 +413,32 @@ class Interface(QMainWindow):
 
             self.tabela.insertRow(linha)
 
-            # -----------------------------------------
-            # Nº SEQUENCIAL
-            # -----------------------------------------
-
-            item_numero = QTableWidgetItem(
-                str(numero)
-            )
-
+            # Número visual do lote
             self.tabela.setItem(
                 linha,
                 0,
-                item_numero
+                QTableWidgetItem(str(numero))
             )
 
-            # -----------------------------------------
-            # DADOS DO LOTE
-            # -----------------------------------------
-
-            for coluna, valor in enumerate(lote, start=1):
-
-                item = QTableWidgetItem(
-                    str(
-                        valor
-                        if valor is not None
-                        else ""
-                    )
-                )
+            # Dados principais do lote
+            # lote[:9] = lote até status
+            for coluna, valor in enumerate(
+                lote[:9],
+                start=1
+            ):
 
                 self.tabela.setItem(
                     linha,
                     coluna,
-                    item
+                    QTableWidgetItem(
+                        str(
+                            valor
+                            if valor is not None
+                            else ""
+                        )
+                    )
                 )
+        
 
     # =========================================================
     # SELECIONAR LOTE
