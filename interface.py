@@ -11,6 +11,8 @@ from PyQt6.QtWidgets import (
     QPushButton
 )
 
+from PyQt6.QtGui import QColor
+
 from widgets.cadastro import CadastroWidget
 from widgets.tabela import TabelaWidget
 from widgets.finalizacao import FinalizacaoWidget
