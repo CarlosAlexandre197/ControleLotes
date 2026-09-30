@@ -423,23 +423,57 @@ class Interface(QMainWindow):
             )
 
             # Dados principais do lote
-            # lote[:9] = lote até status
             for coluna, valor in enumerate(
                 lote[:9],
                 start=1
             ):
 
+                item = QTableWidgetItem(
+                    str(
+                        valor
+                        if valor is not None
+                        else ""
+                    )
+                )
+
                 self.tabela.setItem(
                     linha,
                     coluna,
-                    QTableWidgetItem(
-                        str(
-                            valor
-                            if valor is not None
-                            else ""
-                        )
-                    )
+                    item
                 )
+
+
+            # =========================================================
+            # COLORIR LOTE FINALIZADO
+            # =========================================================
+
+            status = str(
+                lote[8]
+                if lote[8] is not None
+                else ""
+            ).lower()
+
+            if status == "finalizado":
+
+                for coluna in range(
+                    self.tabela.columnCount()
+                ):
+
+                    item = self.tabela.item(
+                        linha,
+                        coluna
+                    )
+
+                    if item:
+
+                        item.setBackground(
+                            QColor("#d9f2d9")
+                        )
+
+                        item.setForeground(
+                            QColor("#1b5e20")
+                        )
+                        
         
 
     # =========================================================
