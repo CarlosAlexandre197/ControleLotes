@@ -409,20 +409,43 @@ class Interface(QMainWindow):
 
         self.tabela.setRowCount(0)
 
-        for numero, lote in enumerate(lotes, start=1):
+        for numero, lote in enumerate(
+            lotes,
+            start=1
+        ):
 
             linha = self.tabela.rowCount()
 
             self.tabela.insertRow(linha)
 
-            # Número visual do lote
+            # =====================================================
+            # NÚMERO VISUAL
+            # =====================================================
+
+            item_numero = QTableWidgetItem(
+                str(numero)
+            )
+
             self.tabela.setItem(
                 linha,
                 0,
-                QTableWidgetItem(str(numero))
+                item_numero
             )
 
-            # Dados principais do lote
+            # =====================================================
+            # DADOS PRINCIPAIS DO LOTE
+            #
+            # lote[0] = Lote
+            # lote[1] = Quantidade
+            # lote[2] = Cartões
+            # lote[3] = Cancelados
+            # lote[4] = Quantidade Final
+            # lote[5] = Palete
+            # lote[6] = Montador
+            # lote[7] = Caixas
+            # lote[8] = Status
+            # =====================================================
+
             for coluna, valor in enumerate(
                 lote[:9],
                 start=1
@@ -442,18 +465,58 @@ class Interface(QMainWindow):
                     item
                 )
 
-
-            # =========================================================
-            # COLORIR LOTE FINALIZADO
-            # =========================================================
+            # =====================================================
+            # COLORIR A LINHA CONFORME O STATUS
+            # =====================================================
 
             status = str(
                 lote[8]
                 if lote[8] is not None
                 else ""
-            ).lower()
+            ).lower().strip()
+
+            # -----------------------------------------------------
+            # FINALIZADO = VERDE
+            # -----------------------------------------------------
 
             if status == "finalizado":
+
+                cor_fundo = QColor(
+                    "#d9f2d9"
+                )
+
+                cor_texto = QColor(
+                    "#1b5e20"
+                )
+
+            # -----------------------------------------------------
+            # PENDENTE = AMARELO
+            # -----------------------------------------------------
+
+            elif status == "pendente":
+
+                cor_fundo = QColor(
+                    "#fff3cd"
+                )
+
+                cor_texto = QColor(
+                    "#856404"
+                )
+
+            # -----------------------------------------------------
+            # OUTROS STATUS = NORMAL
+            # -----------------------------------------------------
+
+            else:
+
+                cor_fundo = None
+                cor_texto = None
+
+            # =====================================================
+            # APLICAR COR EM TODA A LINHA
+            # =====================================================
+
+            if cor_fundo:
 
                 for coluna in range(
                     self.tabela.columnCount()
@@ -467,14 +530,13 @@ class Interface(QMainWindow):
                     if item:
 
                         item.setBackground(
-                            QColor("#d9f2d9")
+                            cor_fundo
                         )
 
                         item.setForeground(
-                            QColor("#1b5e20")
+                            cor_texto
                         )
-                        
-        
+            
 
     # =========================================================
     # SELECIONAR LOTE
